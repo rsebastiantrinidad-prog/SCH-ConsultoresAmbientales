@@ -11,7 +11,7 @@ import type { CargaDocumento, Datos, Fecha, Recordatorio } from './tipos'
 import { usuarioActual, type IdUsuario } from './usuario'
 
 /** Subir este número cuando cambie la forma de los datos: lo guardado con otra versión se descarta. */
-const VERSION = 1
+const VERSION = 2 // 2: cartera de 42 clientes (los datos guardados con la de 12 se descartan)
 const CLAVE = 'sch-demo'
 
 export interface EstadoDemo {

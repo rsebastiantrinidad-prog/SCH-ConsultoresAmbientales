@@ -3,6 +3,8 @@
 Demo de 10 minutos para Hugo, Karina y Lilian. Todo es ficticio: no se guardan datos reales ni se envía nada.
 Spec completo en [spec-demo.md](spec-demo.md).
 
+**Cartera del demo:** 42 clientes ficticios, como el volumen real de SCH (más de 40): 12 detallados a mano, entre ellos los tres del guion, y 30 generados con documentación coherente. Semáforo: 25 al día, 11 a revisar y 6 urgentes; cada socio tiene 14 clientes.
+
 ## Antes de empezar
 
 - [ ] Abrir https://sch-consultores-ambientales.vercel.app/ en la notebook, en pantalla completa (probado en 1366×768).
@@ -14,7 +16,7 @@ Spec completo en [spec-demo.md](spec-demo.md).
 
 | Minuto | Pantalla | Qué hacer | Qué decir |
 | --- | --- | --- | --- |
-| 0–1 | Tablero | Mostrar los 4 indicadores (12 activos, 2 vencimientos en 30 días y 2 ya vencidos, 3 documentos faltantes, 3 trámites en curso). Bajar a **Estadísticas de la cartera**: 85% de la documentación al día, semáforo por socio y **Lo que viene en los próximos 12 meses**. Tocar **Karina** para ver que todo cambia por responsable y volver a **Todos**. | "Esto es lo que hoy no ven sin abrir carpetas: qué vence, qué falta y qué avanza." |
+| 0–1 | Tablero | Mostrar los 4 indicadores (42 activos, 5 vencimientos en 30 días y 5 ya vencidos, 3 documentos faltantes, 3 trámites en curso). En **Necesitan atención**, los 8 más urgentes y el enlace a los 17. Bajar a **Estadísticas de la cartera**: 90% de la documentación al día (191 documentos), semáforo por socio y **Lo que viene en los próximos 12 meses**. Tocar **Karina** para ver que todo cambia por responsable y volver a **Todos**. | "Esto es lo que hoy no ven sin abrir carpetas: qué vence, qué falta y qué avanza." |
 | 1–3 | Ficha de Metalúrgica Ejemplo | Desde **Necesitan atención**, entrar a Metalúrgica (rojo: análisis vencido hace 10 días). En **Qué vence y qué falta**, **Pedir al cliente** sobre el análisis. Mostrar Mail y WhatsApp y **Simular envío**. | "Así se pasa de enterarse tarde a avisar con anticipación." |
 | 3–5 | Loteo Los Algarrobos → Seguimiento | Pestaña **Seguimiento**: licencia al 40%, en Estudio de Impacto Ambiental. **Marcar hecha**, escribir una nota ("Se presentó el EIA") y confirmar: pasa al 60% y queda en la bitácora. | "El cliente deja de preguntar cómo va lo suyo." |
 | 5–7 | Recordatorios | Lista por grupos (Vencidos, Esta semana, Próximos 30 días). **Posponer 7 días** una visita y ver que cambia de grupo. Pasar a **Calendario**. | "Los vencimientos se calculan solos y llegan con tiempo." |
@@ -23,7 +25,7 @@ Spec completo en [spec-demo.md](spec-demo.md).
 
 Si sobra tiempo:
 
-- **Documentación:** en la ficha de Metalúrgica, pestaña **Documentación**, cambiar la fecha del análisis vencido a una fecha futura. El cliente pasa de rojo a ámbar y el tablero baja a "1 ya vencido".
+- **Documentación:** en la ficha de Metalúrgica, pestaña **Documentación**, cambiar la fecha del análisis vencido a una fecha futura. El cliente pasa de rojo a ámbar y el tablero baja de "5 ya vencidos" a "4".
 - **Vista del cliente (P2, 1 minuto):** en la ficha del Loteo, **Ver como el cliente** (o en el selector de la barra, **Cliente (demo)**). El cliente ve cómo va su licencia y los tres documentos que faltan; **Subir documento** pasa el plano a "En revisión". Con **Volver a SCH Gestión**, la ficha muestra el documento en revisión y la nota para Karina. Frase: "El cliente manda lo que falta sin que tengan que perseguirlo."
 
 Para la vista del cliente conviene llevar un PDF cualquiera en la notebook: solo se toma su nombre, el archivo no se lee ni se guarda.
@@ -35,7 +37,7 @@ Verificado el 26/11/2026 sobre el build de producción (`npm run build` + `vite 
 | Criterio | Estado | Cómo se verificó |
 | --- | --- | --- |
 | Los cuatro indicadores del tablero se calculan desde los datos | ✅ | `indicadores()` con pruebas (`indicadores.test.ts`); cambian al filtrar por responsable y al cambiar vigencias. |
-| Cambiar la vigencia de un documento actualiza el semáforo del cliente y el tablero | ✅ | Prueba en `acciones.test.ts` y en el navegador: Metalúrgica pasa de rojo a ámbar; el tablero, de "2 ya vencidos" a "1". |
+| Cambiar la vigencia de un documento actualiza el semáforo del cliente y el tablero | ✅ | Prueba en `acciones.test.ts` y en el navegador: Metalúrgica pasa de rojo a ámbar y baja en uno la cuenta de vencidos del tablero. |
 | "Pedir al cliente" abre una vista previa con todas las variables completas | ✅ | Prueba sobre todos los recordatorios del seed (`seed.test.ts`, `avisos.test.ts`) y en el navegador. |
 | Cada pantalla P0 funciona en 1366×768 y en celular, y carga en menos de un segundo | ✅ | Sin desborde horizontal en ninguna pantalla a 375 px; carga completa entre 50 y 85 ms en local (JS de 120 kB comprimido). |
 | "Reiniciar datos de demo" deja todo como al principio | ✅ | Después de un guion completo: notas, ajustes, etapas e indicadores vuelven al seed. |

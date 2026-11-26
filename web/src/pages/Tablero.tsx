@@ -18,6 +18,10 @@ const TIPO: Record<TipoRecordatorio, { etiqueta: string; Icono: typeof CalendarC
   seguimiento: { etiqueta: 'Seguimiento', Icono: MessageSquareWarning },
 }
 
+/** Cuántas filas muestra cada lista del tablero antes de mandar a la pantalla completa. */
+const MAX_ATENCION = 8
+const MAX_SEMANA = 10
+
 export default function Tablero() {
   const { hoy, datos } = useDemo()
   const usuario = useUsuario()
@@ -27,6 +31,8 @@ export default function Tablero() {
     .filter((f) => f.semaforo !== 'verde' && (usuario === 'todos' || f.cliente.responsable_id === usuario))
     .sort(compararFilas)
   const saludo = usuario === 'todos' ? 'Hola' : `Hola, ${nombreUsuario(usuario)}`
+  // Con más de 40 clientes las listas se acotan a lo más urgente; el resto está a un clic
+  const urgentes = atencion.filter((f) => f.semaforo === 'rojo').length
 
   return (
     <div className="space-y-8">
@@ -79,21 +85,26 @@ export default function Tablero() {
             <p className="rounded-[4px] bg-sch-surface p-5 text-sch-muted">No hay nada atrasado ni para los próximos 7 días.</p>
           ) : (
             <ul className="divide-y divide-sch-black/10">
-              {semana.map(filaSemana)}
+              {semana.slice(0, MAX_SEMANA).map(filaSemana)}
             </ul>
+          )}
+          {semana.length > MAX_SEMANA && (
+            <Link to="/recordatorios" className="inline-block text-sm font-semibold">
+              Ver los {semana.length} recordatorios de la semana
+            </Link>
           )}
         </section>
 
         {/* Clientes que necesitan atención */}
         <section className="min-w-0 space-y-4" aria-labelledby="titulo-atencion">
-          <TituloSeccion>
+          <TituloSeccion accion={atencion.length > 0 && <span className="text-sm text-sch-muted">{urgentes} urgentes · {atencion.length - urgentes} a revisar</span>}>
             <span id="titulo-atencion">Necesitan atención</span>
           </TituloSeccion>
           {atencion.length === 0 ? (
             <p className="rounded-[4px] bg-sch-surface p-5 text-sch-muted">Todos los clientes están al día.</p>
           ) : (
             <ul className="space-y-2">
-              {atencion.map((f, k) => (
+              {atencion.slice(0, MAX_ATENCION).map((f, k) => (
                 <li key={f.cliente.id} className="animar-entrada" style={{ '--i': k } as React.CSSProperties}>
                   <Link
                     to={`/clientes/${f.cliente.id}`}
@@ -108,6 +119,11 @@ export default function Tablero() {
                 </li>
               ))}
             </ul>
+          )}
+          {atencion.length > MAX_ATENCION && (
+            <Link to="/clientes?sem=rojo,ambar" className="inline-block text-sm font-semibold">
+              Ver los {atencion.length} clientes que necesitan atención
+            </Link>
           )}
         </section>
       </div>

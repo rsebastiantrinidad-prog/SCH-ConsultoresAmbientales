@@ -10,21 +10,21 @@ const datos = construirSeed(HOY)
 describe('indicadores del tablero', () => {
   it('se calculan desde los datos', () => {
     expect(indicadores(datos, HOY)).toEqual({
-      clientes_activos: 12,
-      vencimientos_30: 2, // auditoría de Metalúrgica (30 días) y análisis de Curtiembre (25)
-      vencidos: 2, // análisis de Metalúrgica y certificado de Frigorífico
+      clientes_activos: 42,
+      vencimientos_30: 5,
+      vencidos: 5, // Metalúrgica, Frigorífico y los tres rojos generados
       documentacion_faltante: 3, // los tres pendientes del Loteo
       clientes_con_faltante: 1,
       tramites_en_curso: 3,
     })
   })
   it('se filtran por responsable', () => {
-    expect(indicadores(datos, HOY, 'karina')).toMatchObject({ clientes_activos: 4, documentacion_faltante: 3, tramites_en_curso: 2 })
-    expect(indicadores(datos, HOY, 'lilian')).toMatchObject({ clientes_activos: 4, vencimientos_30: 0, vencidos: 1, documentacion_faltante: 0 })
+    expect(indicadores(datos, HOY, 'karina')).toMatchObject({ clientes_activos: 14, documentacion_faltante: 3, tramites_en_curso: 2 })
+    expect(indicadores(datos, HOY, 'lilian')).toMatchObject({ clientes_activos: 14, vencimientos_30: 0, vencidos: 2, documentacion_faltante: 0 })
   })
   it('cambian cuando cambia una vigencia', () => {
     const doc = datos.documentos.find((d) => d.nombre === 'Inscripción anual como generador' && d.vigente_hasta === sumarDias(HOY, 45))!
-    expect(indicadores(cambiarVigencia(datos, doc.id, sumarDias(HOY, 10)), HOY).vencimientos_30).toBe(3)
+    expect(indicadores(cambiarVigencia(datos, doc.id, sumarDias(HOY, 10)), HOY).vencimientos_30).toBe(6)
   })
 })
 
@@ -45,7 +45,7 @@ describe('lista "Esta semana"', () => {
 describe('filas de la tabla de clientes', () => {
   const filas = filasClientes(datos, HOY).sort(compararFilas)
   it('ordena peor semáforo primero y, dentro, el vencimiento más cercano', () => {
-    expect(filas.map((f) => f.semaforo)).toEqual(['rojo', 'rojo', 'rojo', 'ambar', 'ambar', 'ambar', 'ambar', 'verde', 'verde', 'verde', 'verde', 'verde'])
+    expect(filas.map((f) => f.semaforo)).toEqual([...Array(6).fill('rojo'), ...Array(11).fill('ambar'), ...Array(25).fill('verde')])
     expect(filas[0].cliente.razon_social).toBe('Frigorífico La Pampita (demo)') // vencido hace 20 días
   })
   it('muestra servicios activos y próximo vencimiento', () => {

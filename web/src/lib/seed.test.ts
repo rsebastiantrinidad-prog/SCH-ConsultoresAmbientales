@@ -9,12 +9,13 @@ const cliente = (razon: string) => datos.clientes.find((c) => c.razon_social ===
 const serviciosDe = (razon: string) => datos.servicios.filter((s) => s.cliente_id === cliente(razon).id)
 
 describe('volumen del seed', () => {
-  it('12 clientes, unos 25 servicios y unos 70 documentos', () => {
-    expect(datos.clientes).toHaveLength(12)
-    expect(datos.servicios.length).toBeGreaterThanOrEqual(22)
-    expect(datos.servicios.length).toBeLessThanOrEqual(28)
-    expect(datos.documentos.length).toBeGreaterThanOrEqual(65)
-    expect(datos.documentos.length).toBeLessThanOrEqual(75)
+  it('42 clientes (más de 40, como la cartera de SCH), con sus servicios y documentos', () => {
+    expect(datos.clientes).toHaveLength(42)
+    expect(datos.servicios).toHaveLength(69)
+    expect(datos.documentos).toHaveLength(196)
+  })
+  it('Alimentos del Centro sigue siendo el primero en orden alfabético (Plan anual)', () => {
+    expect([...datos.clientes].sort((a, b) => a.razon_social.localeCompare(b.razon_social))[0].razon_social).toBe(CLIENTES_GUION.alimentos)
   })
   it('ids únicos', () => {
     for (const lista of [datos.clientes, datos.servicios, datos.documentos, datos.etapas, datos.notas]) {
@@ -28,22 +29,22 @@ describe('volumen del seed', () => {
 
 describe('semáforo', () => {
   const semaforos = datos.clientes.map((c) => semaforoCliente(datos, c.id, HOY))
-  it('5 verdes, 4 ámbar y 3 rojos', () => {
-    expect(semaforos.filter((s) => s === 'verde')).toHaveLength(5)
-    expect(semaforos.filter((s) => s === 'ambar')).toHaveLength(4)
-    expect(semaforos.filter((s) => s === 'rojo')).toHaveLength(3)
+  it('25 verdes, 11 ámbar y 6 rojos', () => {
+    expect(semaforos.filter((s) => s === 'verde')).toHaveLength(25)
+    expect(semaforos.filter((s) => s === 'ambar')).toHaveLength(11)
+    expect(semaforos.filter((s) => s === 'rojo')).toHaveLength(6)
   })
-  it('los socios se reparten parejo y cada uno tiene al menos un rojo', () => {
+  it('los socios se reparten parejo: 14 clientes y 2 rojos cada uno', () => {
     for (const socio of ['hugo', 'karina', 'lilian'] as const) {
       const suyos = datos.clientes.filter((c) => c.responsable_id === socio)
-      expect(suyos).toHaveLength(4)
-      expect(suyos.some((c) => semaforoCliente(datos, c.id, HOY) === 'rojo')).toBe(true)
+      expect(suyos).toHaveLength(14)
+      expect(suyos.filter((c) => semaforoCliente(datos, c.id, HOY) === 'rojo')).toHaveLength(2)
     }
   })
   it('es relativo a hoy: con otro hoy da la misma distribución', () => {
     const otro = construirSeed('2027-03-15')
     const rojos = otro.clientes.filter((c) => semaforoCliente(otro, c.id, '2027-03-15') === 'rojo')
-    expect(rojos).toHaveLength(3)
+    expect(rojos).toHaveLength(6)
   })
 })
 

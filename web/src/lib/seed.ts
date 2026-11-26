@@ -2,9 +2,12 @@
  * Datos ficticios del demo (ver docs/spec-demo.md, "Datos ficticios de demo").
  * Todo es inventado y lleva "(demo)". Las fechas se calculan como "hoy + N días", así nada queda vencido por error.
  *
- * Semáforo buscado: 5 verdes, 4 ámbar y 3 rojos; cada socio tiene al menos un rojo.
- * Clientes preparados para el guion: Metalúrgica Ejemplo (rojo), Loteo Los Algarrobos (trámite al 40%)
- * y Alimentos del Centro (casi todo verde, inscripción anual que se acerca).
+ * Cartera de 42 clientes, como la de SCH (más de 40):
+ * - 12 clientes detallados a mano (5 verdes, 4 ámbar, 3 rojos), entre ellos los tres preparados para el guion:
+ *   Metalúrgica Ejemplo (rojo), Loteo Los Algarrobos (trámite al 40%) y Alimentos del Centro (casi todo verde).
+ * - 30 clientes más generados a partir de una lista corta (20 verdes, 7 ámbar, 3 rojos), para que el tablero
+ *   y las estadísticas muestren el volumen real sin cargar a mano cada documento.
+ * Total: 25 verdes, 11 ámbar y 6 rojos; cada socio tiene 14 clientes y al menos un rojo.
  */
 import { sumarDias, sumarMeses } from './formato'
 import { ANTICIPACION_DIAS } from './reglas'
@@ -198,6 +201,78 @@ const CLIENTES: EspCliente[] = [
   },
 ]
 
+/**
+ * Clientes generados: nombre, rubro, localidad, contacto, socio responsable, servicios del catálogo y cómo tiene que
+ * quedar su semáforo. Los socios se reparten para que cada uno tenga 14 clientes y 2 rojos en total.
+ * Ningún nombre va antes de "Alimentos del Centro" en orden alfabético, para que siga apareciendo primero en el Plan anual.
+ */
+type Extra = [razon: string, rubro: string, localidad: string, contacto: string, responsable: IdUsuario, servicios: string[], semaforo: 'verde' | 'ambar' | 'rojo']
+
+const EXTRAS: Extra[] = [
+  ['Bodega Valle Serrano (demo)', 'Bodega', 'Colonia Caroya', 'Mariana Peralta', 'hugo', ['efluentes', 'residuos'], 'verde'],
+  ['Cantera Los Molles (demo)', 'Cantera', 'Malagueño', 'Oscar Villalba', 'hugo', ['auditoria', 'monitoreo'], 'ambar'],
+  ['Clínica San Martín (demo)', 'Salud', 'Córdoba', 'Paula Quiroga', 'hugo', ['residuos'], 'verde'],
+  ['Cooperativa Agrícola Norte (demo)', 'Agro', 'Jesús María', 'Héctor Ruarte', 'hugo', ['auditoria'], 'verde'],
+  ['Depósito Fiscal Ruta 19 (demo)', 'Logística', 'Córdoba', 'Sofía Arce', 'hugo', ['auditoria', 'residuos'], 'rojo'],
+  ['Destilería La Calera (demo)', 'Bebidas', 'La Calera', 'Tomás Bustos', 'hugo', ['efluentes'], 'verde'],
+  ['Embotelladora Sierras (demo)', 'Bebidas', 'Río Ceballos', 'Valeria Oviedo', 'hugo', ['efluentes', 'iso14001'], 'verde'],
+  ['Feedlot El Talar (demo)', 'Agro', 'Oncativo', 'Martín Cabrera', 'hugo', ['efluentes', 'auditoria'], 'ambar'],
+  ['Fundición Centro (demo)', 'Industria metalúrgica', 'Córdoba', 'Rubén Olmedo', 'hugo', ['monitoreo', 'residuos'], 'verde'],
+  ['Granja Avícola Las Lomas (demo)', 'Avícola', 'Río Primero', 'Laura Toledo', 'karina', ['efluentes'], 'verde'],
+  ['Hospital Regional Sur (demo)', 'Salud', 'Río Cuarto', 'Gabriel Moyano', 'hugo', ['residuos', 'efluentes'], 'ambar'],
+  ['Hotel Termas del Valle (demo)', 'Hotelería', 'Villa General Belgrano', 'Cecilia Brizuela', 'karina', ['efluentes'], 'verde'],
+  ['Imprenta Gráfica Central (demo)', 'Gráfica', 'Córdoba', 'Nicolás Paz', 'karina', ['residuos'], 'verde'],
+  ['Ladrillera El Algarrobal (demo)', 'Construcción', 'Salsipuedes', 'Ana Sosa', 'karina', ['monitoreo'], 'rojo'],
+  ['Lavadero Industrial Norte (demo)', 'Servicios', 'Córdoba', 'Jorge Herrera', 'karina', ['efluentes'], 'verde'],
+  ['Lácteos La Serranita (demo)', 'Alimentos', 'Villa María', 'Florencia Díaz', 'karina', ['efluentes', 'iso14001'], 'ambar'],
+  ['Molino Harinero San José (demo)', 'Alimentos', 'Arroyito', 'Pedro Gaitán', 'karina', ['auditoria'], 'verde'],
+  ['Planta de Asfalto Vial Sur (demo)', 'Construcción', 'Córdoba', 'Daniela Roldán', 'karina', ['monitoreo', 'auditoria'], 'verde'],
+  ['Plásticos del Interior (demo)', 'Industria plástica', 'Córdoba', 'Esteban Castro', 'karina', ['residuos', 'efluentes'], 'verde'],
+  ['Química Mediterránea (demo)', 'Industria química', 'Córdoba', 'Romina Vera', 'karina', ['residuos', 'iso14001'], 'ambar'],
+  ['Recicladora Ambiental Centro (demo)', 'Reciclado', 'Córdoba', 'Fernando Luna', 'lilian', ['residuos'], 'verde'],
+  ['Sanatorio del Parque (demo)', 'Salud', 'Córdoba', 'Inés Ferreyra', 'lilian', ['residuos'], 'verde'],
+  ['Semillera Pampa Alta (demo)', 'Agro', 'Marcos Juárez', 'Diego Ledesma', 'lilian', ['auditoria'], 'verde'],
+  ['Supermercado Mayorista Ruta 36 (demo)', 'Comercio', 'Río Tercero', 'Claudia Pereyra', 'lilian', ['residuos'], 'ambar'],
+  ['Textil Hilados Córdoba (demo)', 'Industria textil', 'Córdoba', 'Marcelo Godoy', 'lilian', ['efluentes', 'residuos'], 'verde'],
+  ['Tintorería Industrial San Vicente (demo)', 'Servicios', 'Córdoba', 'Silvia Romero', 'lilian', ['efluentes'], 'rojo'],
+  ['Transporte de Cargas Mediterráneo (demo)', 'Logística', 'Córdoba', 'Walter Acosta', 'lilian', ['residuos'], 'verde'],
+  ['Universidad Privada del Centro (demo)', 'Educación', 'Córdoba', 'Patricia Medina', 'lilian', ['residuos', 'licencia'], 'verde'],
+  ['Vivero Forestal Calamuchita (demo)', 'Agro', 'Santa Rosa de Calamuchita', 'Lucas Ortiz', 'lilian', ['licencia', 'auditoria'], 'verde'],
+  ['Yesera Cruz del Eje (demo)', 'Minería', 'Cruz del Eje', 'Graciela Rivero', 'lilian', ['monitoreo', 'efluentes'], 'ambar'],
+]
+
+/**
+ * Pasa cada cliente generado al mismo formato que los detallados. Vencimientos repartidos entre 120 y 600 días;
+ * un ámbar tiene un documento que vence en 20 a 54 días, y un rojo, uno vencido hace 2 a 18 días
+ * (menos que Frigorífico La Pampita, que sigue encabezando la lista de urgentes).
+ */
+function clienteGenerado([razon, rubro, localidad, contacto, responsable, servicios, semaforo]: Extra, i: number): EspCliente {
+  return {
+    razon_social: razon,
+    rubro,
+    localidad,
+    contacto,
+    responsable,
+    servicios: servicios.map((servicio, j) => {
+      const cat = CATALOGO.find((c) => c.id === servicio)!
+      const docs = cat.documentos.map((d, k) => {
+        if (d.vigencia_meses === null) return v(null)
+        if (j === 0 && k === 0 && semaforo === 'ambar') return v(20 + ((i * 7) % 35))
+        if (j === 0 && k === 0 && semaforo === 'rojo') return v(-(2 + ((i * 5) % 17)))
+        return v(120 + ((i * 53 + j * 29 + k * 17) % 480))
+      })
+      return {
+        servicio,
+        estado: 'vigente' as const,
+        visita: cat.periodicidad_meses ? 10 + ((i * 37 + j * 23) % 170) : undefined,
+        docs,
+      }
+    }),
+  }
+}
+
+const TODOS: EspCliente[] = [...CLIENTES, ...EXTRAS.map(clienteGenerado)]
+
 /** Nombres de los clientes preparados para el guion, para ubicarlos sin depender del id. */
 export const CLIENTES_GUION = {
   metalurgica: 'Metalúrgica Ejemplo S.A. (demo)',
@@ -219,7 +294,7 @@ export function construirSeed(hoy: Fecha): Datos {
   const etapas: Etapa[] = []
   let nDoc = 0
 
-  CLIENTES.forEach((ec, i) => {
+  TODOS.forEach((ec, i) => {
     const clienteId = `cli-${dos(i + 1)}`
     clientes.push({
       id: clienteId,
