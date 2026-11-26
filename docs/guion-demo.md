@@ -5,7 +5,7 @@ Spec completo en [spec-demo.md](spec-demo.md).
 
 ## Antes de empezar
 
-- [ ] Abrir la URL publicada en la notebook, en pantalla completa (probado en 1366×768).
+- [ ] Abrir https://sch-consultores-ambientales.vercel.app/ en la notebook, en pantalla completa (probado en 1366×768).
 - [ ] En el pie, **Reiniciar datos de demo** y dejar **Hoy en el demo** en 26/11/2026.
 - [ ] Selector de usuario de la barra en **Todos**.
 - [ ] Tener la misma URL abierta en un celular de respaldo.
@@ -30,7 +30,7 @@ Para la vista del cliente conviene llevar un PDF cualquiera en la notebook: solo
 
 ## Criterios de aceptación (spec)
 
-Verificado el 26/11/2026 sobre el build de producción (`npm run build` + `vite preview`), en 1366×768 y 375×812.
+Verificado el 26/11/2026 sobre el build de producción (`npm run build` + `vite preview`) y repetido sobre la URL de Vercel, en 1366×768 y 375×812. En Vercel la carga completa va de 210 a 560 ms; la más lenta es la primera visita, en frío.
 
 | Criterio | Estado | Cómo se verificó |
 | --- | --- | --- |

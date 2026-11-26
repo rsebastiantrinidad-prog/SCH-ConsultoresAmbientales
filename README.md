@@ -4,6 +4,8 @@ Prototipo navegable, con datos ficticios, que muestra a los socios de SCH cómo 
 
 > Con más de 40 clientes, nadie debería abrir carpetas para saber qué vence y qué falta.
 
+**Demo publicada:** https://sch-consultores-ambientales.vercel.app/ · **Guion:** [docs/guion-demo.md](docs/guion-demo.md)
+
 ## Estructura
 
 | Carpeta | Qué hay |
@@ -29,7 +31,7 @@ En el pie de la app están **Hoy en el demo** (por defecto 26/11/2026) y **Reini
 
 ## Deploy
 
-Vercel, con **Root Directory = `web`**. `web/vercel.json` reescribe todas las rutas a `index.html` (SPA).
+Vercel (https://sch-consultores-ambientales.vercel.app/), con **Root Directory = `web`**; cada push a `main` publica. `web/vercel.json` reescribe todas las rutas a `index.html` (SPA).
 
 ## Plan de trabajo
 
