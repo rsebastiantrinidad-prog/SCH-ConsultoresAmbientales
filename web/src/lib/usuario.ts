@@ -26,6 +26,9 @@ function leer(): Seleccion {
 
 let actual: Seleccion = leer()
 
+/** Usuario elegido, fuera de React (lo usa el store para firmar notas). */
+export const usuarioActual = (): Seleccion => actual
+
 export function elegirUsuario(v: Seleccion) {
   actual = v
   try {

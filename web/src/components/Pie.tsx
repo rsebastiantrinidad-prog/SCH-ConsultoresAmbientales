@@ -1,15 +1,19 @@
+import ControlesDemo from './ControlesDemo'
+
 const IG_DBP = 'https://www.instagram.com/drivenbypeople_/'
 
-/** Pie de página: gris del sitio, texto blanco, aviso de demo y "Powered by". */
+/** Pie de página: gris del sitio, texto blanco, aviso de demo, controles del demo y "Powered by". */
 export default function Pie() {
   return (
     <footer className="mt-auto bg-sch-gray text-white print:hidden">
-      <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6 text-sm sm:flex-row sm:items-center sm:justify-between">
+      <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-6 text-sm lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-1">
           <p className="font-display text-base font-bold">SCH Gestión · Demo</p>
           <p>Demo con datos ficticios: no guarda datos reales ni envía mensajes.</p>
           <p>© 2026 SCH Consultores Ambientales. Córdoba, Argentina.</p>
         </div>
+
+        <ControlesDemo />
 
         <a
           href={IG_DBP}
