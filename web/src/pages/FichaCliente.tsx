@@ -107,7 +107,7 @@ export default function FichaCliente() {
       <header className="space-y-4 border-b border-sch-black/10 pb-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0 space-y-2">
-            <h1 className="text-3xl font-bold sm:text-[40px] sm:leading-tight">{cliente.razon_social}</h1>
+            <h1 className="text-3xl font-semibold sm:text-[40px] sm:leading-tight">{cliente.razon_social}</h1>
             <div className="flex flex-wrap items-center gap-2">
               <Semaforo valor={semaforo} />
               {motivo && <span className={`text-sm font-semibold ${semaforo === 'rojo' ? 'text-sch-red' : ''}`}>{motivo}</span>}
@@ -158,7 +158,7 @@ export default function FichaCliente() {
           </button>
         ))}
       </div>
-      <div role="tabpanel" id="panel-ficha" aria-labelledby={`tab-${pestana}`}>
+      <div key={pestana} role="tabpanel" id="panel-ficha" aria-labelledby={`tab-${pestana}`} className="animar-aparecer">
         <Actual {...props} />
       </div>
 

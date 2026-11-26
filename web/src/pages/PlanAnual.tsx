@@ -48,7 +48,9 @@ export default function PlanAnual() {
       <TituloSeccion as="h1">Plan anual</TituloSeccion>
 
       <BannerFoto nombre="auditoria-planta" posicion="20% 30%" className="rounded-[4px] px-5 py-6 sm:px-8 sm:py-8">
-        <p className="max-w-xl font-display text-xl font-bold leading-snug text-white sm:text-2xl">Los servicios del año, planificados y a la vista.</p>
+        <p className="max-w-xl font-[family-name:var(--font-titulo)] text-2xl font-semibold leading-tight tracking-tight text-white sm:text-3xl">
+          Los servicios del año, <span className="acento">planificados</span> y a la vista.
+        </p>
         <p className="mt-2 max-w-xl text-sm text-white/85">Visitas, auditorías y renovaciones de cada cliente en los próximos 12 meses, para ofrecerlos ordenados.</p>
       </BannerFoto>
 
@@ -151,7 +153,7 @@ export default function PlanAnual() {
           <h2 id="titulo-cronologia" className="titulo-seccion text-xl font-semibold sm:text-[25px]">
             En orden de fecha
           </h2>
-          <ul className="divide-y divide-sch-black/10">
+          <ul className="lista-animada divide-y divide-sch-black/10">
             {plan
               .flatMap((fila) => fila.eventos.map((e) => ({ fila, e })))
               .sort((a, b) => a.e.fecha.localeCompare(b.e.fecha))

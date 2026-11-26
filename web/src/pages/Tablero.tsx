@@ -1,6 +1,7 @@
 import { CalendarClock, ChevronRight, ClipboardList, FileWarning, FolderOpen, Hourglass, MapPin, MessageSquareWarning, Users } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import FiltroResponsable from '../components/FiltroResponsable'
+import EstadisticasCartera from '../components/EstadisticasCartera'
 import { BannerFoto } from '../components/Foto'
 import TarjetaIndicador from '../components/TarjetaIndicador'
 import { Semaforo, TituloSeccion } from '../components/ui'
@@ -32,15 +33,18 @@ export default function Tablero() {
       {/* Encabezado: foto de planta con velo oscuro, tesis del demo y filtro por responsable */}
       <BannerFoto nombre="ingeniera-planta" prioridad posicion="70% center" className="-mx-4 -mt-6 px-4 pb-6 pt-7 sm:-mt-8 sm:rounded-b-[4px] lg:mx-0 lg:px-8">
         <p className="text-sm text-sch-mint first-letter:uppercase">{fechaLarga(hoy)}</p>
-        <h1 className="mt-1 text-3xl font-bold text-white sm:text-[40px] sm:leading-tight">{saludo}</h1>
-        <p className="mt-2 max-w-2xl text-white/85">Qué vence, qué falta y qué avanza, sin abrir carpetas.</p>
+        <h1 className="mt-1 text-3xl font-semibold text-white sm:text-[40px] sm:leading-tight">{saludo}</h1>
+        <p className="mt-2 max-w-2xl text-lg text-white/90">
+          Qué vence, qué falta y qué avanza, <span className="acento">sin abrir carpetas</span>.
+        </p>
         <div className="mt-5">
           <FiltroResponsable claro />
         </div>
 
         <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
-          <TarjetaIndicador titulo="Clientes activos" valor={ind.clientes_activos} a="/clientes" Icono={Users} />
+          <TarjetaIndicador i={0} titulo="Clientes activos" valor={ind.clientes_activos} a="/clientes" Icono={Users} />
           <TarjetaIndicador
+            i={1}
             titulo="Vencimientos en 30 días"
             valor={ind.vencimientos_30}
             detalle={ind.vencidos ? `y ${ind.vencidos} ya ${ind.vencidos === 1 ? 'vencido' : 'vencidos'}` : 'Nada vencido'}
@@ -48,13 +52,14 @@ export default function Tablero() {
             Icono={Hourglass}
           />
           <TarjetaIndicador
+            i={2}
             titulo="Documentación faltante"
             valor={ind.documentacion_faltante}
             detalle={ind.documentacion_faltante ? `en ${ind.clientes_con_faltante} ${ind.clientes_con_faltante === 1 ? 'cliente' : 'clientes'}` : 'No falta nada'}
             a="/clientes?ver=faltante"
             Icono={FileWarning}
           />
-          <TarjetaIndicador titulo="Trámites en curso" valor={ind.tramites_en_curso} a="/clientes?ver=tramites" Icono={ClipboardList} />
+          <TarjetaIndicador i={3} titulo="Trámites en curso" valor={ind.tramites_en_curso} a="/clientes?ver=tramites" Icono={ClipboardList} />
         </div>
       </BannerFoto>
 
@@ -88,11 +93,11 @@ export default function Tablero() {
             <p className="rounded-[4px] bg-sch-surface p-5 text-sch-muted">Todos los clientes están al día.</p>
           ) : (
             <ul className="space-y-2">
-              {atencion.map((f) => (
-                <li key={f.cliente.id}>
+              {atencion.map((f, k) => (
+                <li key={f.cliente.id} className="animar-entrada" style={{ '--i': k } as React.CSSProperties}>
                   <Link
                     to={`/clientes/${f.cliente.id}`}
-                    className="flex items-center justify-between gap-3 rounded-[4px] border border-sch-black/10 px-3 py-2.5 text-sch-ink no-underline transition hover:bg-sch-surface"
+                    className="levantar flex items-center justify-between gap-3 rounded-[4px] border border-sch-black/10 px-3 py-2.5 text-sch-ink no-underline hover:bg-sch-surface"
                   >
                     <span className="min-w-0">
                       <span className="block truncate font-display font-bold">{f.cliente.razon_social}</span>
@@ -106,16 +111,18 @@ export default function Tablero() {
           )}
         </section>
       </div>
+
+      <EstadisticasCartera />
     </div>
   )
 
-  function filaSemana(r: Recordatorio) {
+  function filaSemana(r: Recordatorio, k: number) {
     const cliente = datos.clientes.find((c) => c.id === r.cliente_id)
     const { etiqueta, Icono } = TIPO[r.tipo]
     const { dia, mes } = diaMes(r.fecha)
     const atrasado = diasEntre(hoy, r.fecha) < 0
     return (
-      <li key={r.id}>
+      <li key={r.id} className="animar-entrada" style={{ '--i': k } as React.CSSProperties}>
         <Link to={`/clientes/${r.cliente_id}`} className="flex items-center gap-3 px-1 py-3 text-sch-ink no-underline transition hover:bg-sch-surface sm:gap-4">
           <span
             className={`flex w-12 shrink-0 flex-col items-center rounded-[4px] py-1 leading-none ${atrasado ? 'bg-sch-red text-white' : 'bg-sch-black text-white'}`}

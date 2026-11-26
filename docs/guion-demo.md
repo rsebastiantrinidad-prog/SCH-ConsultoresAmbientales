@@ -14,7 +14,7 @@ Spec completo en [spec-demo.md](spec-demo.md).
 
 | Minuto | Pantalla | Qué hacer | Qué decir |
 | --- | --- | --- | --- |
-| 0–1 | Tablero | Mostrar los 4 indicadores (12 activos, 2 vencimientos en 30 días y 2 ya vencidos, 3 documentos faltantes, 3 trámites en curso). Tocar **Karina** para ver que el tablero cambia por responsable y volver a **Todos**. | "Esto es lo que hoy no ven sin abrir carpetas: qué vence, qué falta y qué avanza." |
+| 0–1 | Tablero | Mostrar los 4 indicadores (12 activos, 2 vencimientos en 30 días y 2 ya vencidos, 3 documentos faltantes, 3 trámites en curso). Bajar a **Estadísticas de la cartera**: 85% de la documentación al día, semáforo por socio y **Lo que viene en los próximos 12 meses**. Tocar **Karina** para ver que todo cambia por responsable y volver a **Todos**. | "Esto es lo que hoy no ven sin abrir carpetas: qué vence, qué falta y qué avanza." |
 | 1–3 | Ficha de Metalúrgica Ejemplo | Desde **Necesitan atención**, entrar a Metalúrgica (rojo: análisis vencido hace 10 días). En **Qué vence y qué falta**, **Pedir al cliente** sobre el análisis. Mostrar Mail y WhatsApp y **Simular envío**. | "Así se pasa de enterarse tarde a avisar con anticipación." |
 | 3–5 | Loteo Los Algarrobos → Seguimiento | Pestaña **Seguimiento**: licencia al 40%, en Estudio de Impacto Ambiental. **Marcar hecha**, escribir una nota ("Se presentó el EIA") y confirmar: pasa al 60% y queda en la bitácora. | "El cliente deja de preguntar cómo va lo suyo." |
 | 5–7 | Recordatorios | Lista por grupos (Vencidos, Esta semana, Próximos 30 días). **Posponer 7 días** una visita y ver que cambia de grupo. Pasar a **Calendario**. | "Los vencimientos se calculan solos y llegan con tiempo." |
@@ -51,6 +51,9 @@ Verificado el 26/11/2026 sobre el build de producción (`npm run build` + `vite 
 - **Gris de texto secundario `#666666`:** el gris del sitio (`#777777`) sobre blanco da 4,48:1 y no llega a AA. Se usa una versión apenas más oscura para texto, igual que el verde oscuro derivado que ya prevé el spec. `#777777` y `#727271` siguen para fondos y el pie.
 - **Botón principal en 19 px negrita:** con ese tamaño, el blanco sobre el verde de marca (3,1:1) cumple AA como "texto grande", como dice el spec.
 - **Fotos:** las aportó Sebastián (no se usa la foto de stock del sitio, que tiene copyright de un fotógrafo). Van en el tablero, Recordatorios, Plan anual y las tarjetas de servicios; Residuos y Monitoreo todavía usan el patrón de hojas. Se sirven en WebP optimizado (12 a 70 kB por foto según la pantalla).
+- **Tipografía:** Cabin sigue siendo la voz de la marca (navegación, botones, etiquetas y cifras). Se suma Fraunces (serif de trazos suaves, 600 y su itálica) para títulos y frases destacadas, y Figtree reemplaza a Roboto en el texto. Solo se cargan los cortes que se usan: unos 86 kB en total (antes, 69 kB).
+- **Animaciones:** entradas escalonadas, transición entre pantallas, barras que crecen, cifras que cuentan hasta su valor, diálogos que aparecen y subrayado animado en el menú. Todas cortas, con la misma curva, y se apagan si el sistema pide reducir el movimiento.
+- **Estadísticas del tablero:** gráficos de una sola serie en verde de marca (la paleta no tiene un segundo tono que pase como categoría para daltonismo); los colores de estado solo para estados, siempre con ícono y texto; cada gráfico tiene "Ver datos" con la tabla.
 - **Logo:** se usa el logo real de SCH (`logo1.png` del sitio), con el visto bueno de Sebastián.
 
 ## Preguntas abiertas (PER-137)

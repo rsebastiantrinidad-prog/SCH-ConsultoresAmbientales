@@ -31,7 +31,7 @@ export function BarraAvance({ valor, etiqueta }: { valor: number; etiqueta?: str
         aria-valuenow={valor}
         aria-label={etiqueta ?? 'Avance'}
       >
-        <div className="h-full rounded-full bg-sch-green transition-[width]" style={{ width: `${valor}%` }} />
+        <div className="crecer-x h-full rounded-full bg-sch-green transition-[width] duration-500" style={{ width: `${valor}%` }} />
       </div>
       <span className="w-10 text-right font-display text-sm font-bold tabular-nums">{valor}%</span>
     </div>

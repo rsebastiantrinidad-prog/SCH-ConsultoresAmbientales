@@ -35,7 +35,7 @@ export default function Documentacion({ clienteId, onAviso }: PropsPestana) {
         return (
           <section key={s.id} className="space-y-2">
             <TituloSeccion accion={<EstadoServicioPastilla valor={s.estado} />}>{nombreServicio(datos, s)}</TituloSeccion>
-            <ul className="divide-y divide-sch-black/10">
+            <ul className="lista-animada divide-y divide-sch-black/10">
               {docs.map((d) => (
                 <FilaDocumento
                   key={d.id}

@@ -91,7 +91,9 @@ export default function Recordatorios() {
       </TituloSeccion>
 
       <BannerFoto nombre="carpetas-vencimientos" posicion="center 60%" className="rounded-[4px] px-5 py-6 sm:px-8 sm:py-8">
-        <p className="max-w-xl font-display text-xl font-bold leading-snug text-white sm:text-2xl">Sin carpetas ni calendarios en papel: los vencimientos se calculan solos y llegan con tiempo.</p>
+        <p className="max-w-xl font-[family-name:var(--font-titulo)] text-2xl font-semibold leading-tight tracking-tight text-white sm:text-3xl">
+          Sin carpetas ni calendarios en papel: los vencimientos <span className="acento">se calculan solos</span> y llegan con tiempo.
+        </p>
         <p className="mt-2 max-w-xl text-sm text-white/85">
           Salen de las vigencias de los documentos, los pendientes y las visitas de cada servicio. Avisan con anticipación (60 días para vencimientos, valores de ejemplo).
         </p>
@@ -161,7 +163,7 @@ export default function Recordatorios() {
                   (rs.length === 0 ? (
                     <p className="py-3 text-sm text-sch-muted">Nada por acá.</p>
                   ) : (
-                    <ul className="divide-y divide-sch-black/10">
+                    <ul className="lista-animada divide-y divide-sch-black/10">
                       {rs.map((r) => (
                         <FilaRecordatorio key={r.id} r={r} onAviso={setAviso} />
                       ))}

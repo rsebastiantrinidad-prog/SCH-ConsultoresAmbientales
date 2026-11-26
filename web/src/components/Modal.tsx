@@ -51,16 +51,16 @@ export default function Modal({
   }, [onCerrar])
 
   return (
-    <div className="fixed inset-0 z-30 flex items-end justify-center bg-sch-black/60 p-0 sm:items-center sm:p-4" onMouseDown={(e) => e.target === e.currentTarget && onCerrar()}>
+    <div className="animar-aparecer fixed inset-0 z-30 flex items-end justify-center bg-sch-black/60 p-0 sm:items-center sm:p-4" onMouseDown={(e) => e.target === e.currentTarget && onCerrar()}>
       <div
         ref={caja}
         role="dialog"
         aria-modal="true"
         aria-labelledby={idTitulo}
-        className={`flex max-h-[92vh] w-full ${ancho} flex-col rounded-t-[4px] bg-white sm:rounded-[4px]`}
+        className={`dialogo-entrar flex max-h-[92vh] w-full ${ancho} flex-col rounded-t-[4px] bg-white sm:rounded-[4px]`}
       >
         <div className="flex items-center justify-between gap-3 border-b border-sch-black/10 px-5 py-4">
-          <h2 id={idTitulo} className="text-xl font-bold">
+          <h2 id={idTitulo} className="text-xl font-semibold">
             {titulo}
           </h2>
           <button type="button" onClick={onCerrar} className="rounded-full p-1.5 hover:bg-sch-surface" aria-label="Cerrar">

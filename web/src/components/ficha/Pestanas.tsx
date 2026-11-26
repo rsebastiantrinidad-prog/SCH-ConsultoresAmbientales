@@ -47,7 +47,7 @@ export function Resumen({ clienteId, irA, onAviso }: PropsPestana) {
         {urgentes.length === 0 ? (
           <Vacio>Toda la documentación está al día.</Vacio>
         ) : (
-          <ul className="divide-y divide-sch-black/10">
+          <ul className="lista-animada divide-y divide-sch-black/10">
             {urgentes.map(({ d, e }) => {
               const s = servicios.find((x) => x.id === d.servicio_cliente_id)!
               const fecha = d.vigente_hasta ?? d.fecha_objetivo
@@ -136,7 +136,7 @@ export function Servicios({ clienteId, irA }: PropsPestana) {
       {servicios.length === 0 ? (
         <Vacio>Todavía no tiene servicios.</Vacio>
       ) : (
-        <ul className="grid gap-3 md:grid-cols-2">
+        <ul className="lista-animada grid gap-3 md:grid-cols-2">
           {servicios.map((s) => {
             const etapas = etapasDeServicio(datos, s.id)
             const actual = etapaActual(etapas)
@@ -346,7 +346,7 @@ export function Recordatorios({ clienteId, onAviso }: PropsPestana) {
       {lista.length === 0 ? (
         <Vacio>No hay recordatorios para este cliente.</Vacio>
       ) : (
-        <ul className="divide-y divide-sch-black/10">
+        <ul className="lista-animada divide-y divide-sch-black/10">
           {[...pendientes, ...hechos].map((r) => (
             <FilaRecordatorio key={r.id} r={r} onAviso={onAviso} mostrarCliente={false} />
           ))}
@@ -404,7 +404,7 @@ export function Notas({ clienteId }: PropsPestana) {
 function ListaNotas({ notas, conServicio = false }: { notas: Nota[]; conServicio?: boolean }) {
   const { datos } = useDemo()
   return (
-    <ul className="space-y-3">
+    <ul className="lista-animada space-y-3">
       {notas.map((n) => {
         const s = n.servicio_cliente_id ? datos.servicios.find((x) => x.id === n.servicio_cliente_id) : null
         return (

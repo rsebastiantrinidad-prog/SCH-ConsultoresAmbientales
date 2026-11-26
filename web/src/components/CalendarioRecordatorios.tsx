@@ -35,7 +35,7 @@ export default function CalendarioRecordatorios({
         <button type="button" onClick={() => onMes(sumarMesesAMes(mes, -1))} className="rounded-full border border-sch-black/25 p-1.5 hover:border-sch-black" aria-label="Mes anterior">
           <ChevronLeft className="h-4 w-4" aria-hidden />
         </button>
-        <h2 className="min-w-48 text-center text-xl font-bold first-letter:uppercase" aria-live="polite">
+        <h2 className="min-w-48 text-center text-xl font-semibold first-letter:uppercase" aria-live="polite">
           {nombreMes(mes)}
         </h2>
         <button type="button" onClick={() => onMes(sumarMesesAMes(mes, 1))} className="rounded-full border border-sch-black/25 p-1.5 hover:border-sch-black" aria-label="Mes siguiente">

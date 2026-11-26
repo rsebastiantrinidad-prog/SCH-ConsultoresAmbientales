@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { Logo } from './Marca'
 import Pie from './Pie'
 import SelectorUsuario from './SelectorUsuario'
@@ -25,8 +25,8 @@ function Menu() {
           to={it.ruta}
           end={it.ruta === '/'}
           className={({ isActive }) =>
-            `whitespace-nowrap px-3 py-2 font-display text-base font-bold text-white no-underline decoration-sch-green decoration-2 underline-offset-[10px] transition hover:text-sch-mint ${
-              isActive ? 'underline' : ''
+            `nav-enlace whitespace-nowrap px-3 py-2 font-display text-base font-bold no-underline transition-colors ${
+              isActive ? 'text-white' : 'text-white/85 hover:text-white'
             }`
           }
         >
@@ -38,6 +38,7 @@ function Menu() {
 }
 
 export default function Layout() {
+  const { pathname } = useLocation()
   return (
     <div className="flex min-h-full flex-col">
       <header className="sticky top-0 z-20 bg-sch-black print:hidden">
@@ -57,7 +58,8 @@ export default function Layout() {
           <Menu />
         </nav>
       </header>
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:py-8">
+      {/* La clave hace que cada pantalla entre con su animación al navegar */}
+      <main key={pathname} className="pagina-entrar mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:py-8">
         <Outlet />
       </main>
       <Pie />

@@ -162,7 +162,7 @@ export default function Clientes() {
                   </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="lista-animada">
                 {filas.map((f) => (
                   <tr
                     key={f.cliente.id}
@@ -194,7 +194,7 @@ export default function Clientes() {
           </div>
 
           {/* Celular: tarjetas */}
-          <ul className="space-y-2 md:hidden">
+          <ul className="lista-animada space-y-2 md:hidden">
             {filas.map((f) => (
               <li key={f.cliente.id}>
                 <Link to={`/clientes/${f.cliente.id}`} className="block rounded-[4px] border border-sch-black/15 p-3 text-sch-ink no-underline active:bg-sch-surface">

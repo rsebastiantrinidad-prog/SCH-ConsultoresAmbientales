@@ -66,7 +66,7 @@ export default function PortalCliente() {
           <>
             <section className="space-y-1">
               <p className="text-sch-muted">{v.razon_social}</p>
-              <h1 className="text-3xl font-bold sm:text-[40px] sm:leading-tight">Hola, {v.contacto_nombre.replace(/ \(demo\)$/, '').split(' ')[0]}</h1>
+              <h1 className="text-3xl font-semibold sm:text-[40px] sm:leading-tight">Hola, {v.contacto_nombre.replace(/ \(demo\)$/, '').split(' ')[0]}</h1>
               <p className="flex items-center gap-1.5 text-sch-muted">
                 <UserRound className="h-4 w-4 text-sch-green-dark" aria-hidden />
                 Te acompaña {nombreUsuario(v.responsable_id)}, de SCH Consultores Ambientales.
@@ -93,7 +93,7 @@ export default function PortalCliente() {
                   Por ahora no necesitamos nada. Está todo al día.
                 </p>
               ) : (
-                <ul className="space-y-2">
+                <ul className="lista-animada space-y-2">
                   {v.necesitamos.map((d) => (
                     <FilaNecesitamos key={d.id} d={d} hoy={hoy} onSubido={setSubido} />
                   ))}
@@ -106,7 +106,7 @@ export default function PortalCliente() {
               <h2 id="titulo-servicios" className="titulo-seccion text-xl font-semibold sm:text-[25px]">
                 Cómo van tus servicios
               </h2>
-              <ul className="grid gap-3 sm:grid-cols-2">
+              <ul className="lista-animada grid gap-3 sm:grid-cols-2">
                 {v.servicios.map((s) => (
                   <li key={s.id} className="overflow-hidden rounded-[4px] border border-sch-black/15">
                     <FotoServicio categoria={s.categoria} />
@@ -134,7 +134,7 @@ export default function PortalCliente() {
               <h2 id="titulo-al-dia" className="titulo-seccion text-xl font-semibold sm:text-[25px]">
                 Tu documentación al día
               </h2>
-              <ul className="divide-y divide-sch-black/10">
+              <ul className="lista-animada divide-y divide-sch-black/10">
                 {v.al_dia.map((d) => (
                   <li key={d.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2.5">
                     <EstadoDocumentoPastilla valor={d.estado} />
