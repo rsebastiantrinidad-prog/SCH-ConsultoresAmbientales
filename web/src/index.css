@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+/*
+ * Identidad SCH, tomada de sch-consultores.com.ar (ver docs/spec-demo.md, "Guía de estilo visual").
+ * Estilo plano: sin sombras ni degradados. El único redondeo marcado es la pastilla del botón.
+ * Ámbar y rojo son derivados: solo para el semáforo.
+ */
+@theme {
+  --font-sans: "Roboto", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --font-display: "Cabin", "Roboto", ui-sans-serif, system-ui, sans-serif;
+
+  /* Paleta del sitio */
+  --color-sch-green: #58a428;      /* acento: botones, íconos, barras, estado Vigente */
+  --color-sch-green-dark: #3f7d1a; /* derivado: texto chico y enlaces sobre blanco (≈5:1) */
+  --color-sch-mint: #20d89b;       /* resaltes, hover, insignias, estado En revisión */
+  --color-sch-black: #000000;      /* barra superior y títulos */
+  --color-sch-ink: #0a0a0a;        /* texto de lectura */
+  --color-sch-muted: #777777;      /* texto secundario, estado Pendiente */
+  --color-sch-gray: #727271;       /* pie de página y paneles laterales */
+  --color-sch-surface: rgba(0, 0, 0, 0.04); /* filas alternas, hover, tarjetas */
+
+  /* Derivados, solo semáforo */
+  --color-sch-amber: #f2a900;
+  --color-sch-red: #c62828;
+
+  --radius-pill: 200px;
+  --radius-field: 4px;
+}
+
+/* En @layer base para que las utilidades de Tailwind (text-white, etc.) les ganen */
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-white font-sans text-sch-ink antialiased;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    color: var(--color-sch-black);
+    text-wrap: balance;
+  }
+
+  a {
+    color: var(--color-sch-green-dark);
+  }
+}
+
+/* Título de sección: Cabin 700 con línea fina verde clara debajo, como "Servicios" en el sitio */
+.titulo-seccion {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--color-sch-black);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-sch-green) 35%, white);
+}
+
+/* Botón principal: pastilla verde, Cabin 700, con la línea corta antes del texto ("— Conocenos") */
+.boton-principal {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-sch-green);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.6rem 1.4rem;
+  transition: background-color 0.15s;
+}
+.boton-principal::before {
+  content: "";
+  display: block;
+  width: 1.1rem;
+  height: 2px;
+  background: currentColor;
+}
+.boton-principal:hover:not(:disabled) {
+  background: var(--color-sch-green-dark);
+}
+.boton-principal:disabled {
+  opacity: 0.5;
+}
+
+/* Botón secundario: misma pastilla, borde negro */
+.boton-secundario {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-sch-black);
+  background: #fff;
+  color: var(--color-sch-black);
+  font-family: var(--font-display);
+  font-weight: 600;
+  padding: 0.5rem 1.2rem;
+  transition: background-color 0.15s;
+}
+.boton-secundario:hover:not(:disabled) {
+  background: var(--color-sch-surface);
+}
+
+/* Campos de formulario: radio 4px, sin sombras */
+.campo {
+  border: 1px solid color-mix(in srgb, var(--color-sch-black) 25%, white);
+  border-radius: var(--radius-field);
+  background: #fff;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.9375rem;
+}
+.campo:focus {
+  outline: 2px solid var(--color-sch-mint);
+  outline-offset: 1px;
+}
+
+/* Foco visible en todo lo que se toca */
+:where(a, button, select, input, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-sch-mint);
+  outline-offset: 2px;
+}
+
+/* Scroll horizontal sin barra visible (navegación y pestañas en el celular) */
+.sin-barra {
+  scrollbar-width: none;
+}
+.sin-barra::-webkit-scrollbar {
+  display: none;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boton-principal, .boton-secundario { transition: none; }
+}
