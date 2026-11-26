@@ -14,7 +14,7 @@ import { nombreUsuario } from '../../lib/usuario'
 import FilaRecordatorio from '../FilaRecordatorio'
 import Modal from '../Modal'
 import { EstadoDocumentoPastilla, TituloSeccion } from '../ui'
-import { BarraAvance, EstadoServicioPastilla, Vacio, nombreServicio } from './comun'
+import { BarraAvance, EstadoServicioPastilla, FotoServicio, Vacio, categoriaServicio, nombreServicio } from './comun'
 import ModalAgregarServicio from './ModalAgregarServicio'
 
 export type Pestana = 'resumen' | 'servicios' | 'documentacion' | 'seguimiento' | 'recordatorios' | 'notas'
@@ -143,7 +143,9 @@ export function Servicios({ clienteId, irA }: PropsPestana) {
             const docs = datos.documentos.filter((d) => d.servicio_cliente_id === s.id)
             const vigentes = docs.filter((d) => estadoDocumento(d, hoy) === 'vigente').length
             return (
-              <li key={s.id} className="space-y-3 rounded-[4px] border border-sch-black/15 p-4">
+              <li key={s.id} className="overflow-hidden rounded-[4px] border border-sch-black/15">
+                <FotoServicio categoria={categoriaServicio(datos, s)} />
+                <div className="space-y-3 p-4">
                 <div className="flex items-start justify-between gap-2">
                   <h3 className="text-lg font-bold">{nombreServicio(datos, s)}</h3>
                   <EstadoServicioPastilla valor={s.estado} />
@@ -168,6 +170,7 @@ export function Servicios({ clienteId, irA }: PropsPestana) {
                   <button type="button" className="font-semibold text-sch-green-dark underline" onClick={() => irA('seguimiento')}>
                     Seguimiento
                   </button>
+                </div>
                 </div>
               </li>
             )

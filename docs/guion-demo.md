@@ -50,7 +50,7 @@ Verificado el 26/11/2026 sobre el build de producción (`npm run build` + `vite 
 
 - **Gris de texto secundario `#666666`:** el gris del sitio (`#777777`) sobre blanco da 4,48:1 y no llega a AA. Se usa una versión apenas más oscura para texto, igual que el verde oscuro derivado que ya prevé el spec. `#777777` y `#727271` siguen para fondos y el pie.
 - **Botón principal en 19 px negrita:** con ese tamaño, el blanco sobre el verde de marca (3,1:1) cumple AA como "texto grande", como dice el spec.
-- **Encabezado del tablero sin foto:** la foto de follaje del sitio es de stock y tiene copyright de un fotógrafo. Se usa un patrón de hojas en SVG con los colores de la marca.
+- **Fotos:** las aportó Sebastián (no se usa la foto de stock del sitio, que tiene copyright de un fotógrafo). Van en el tablero, Recordatorios, Plan anual y las tarjetas de servicios; Residuos y Monitoreo todavía usan el patrón de hojas. Se sirven en WebP optimizado (12 a 70 kB por foto según la pantalla).
 - **Logo:** se usa el logo real de SCH (`logo1.png` del sitio), con el visto bueno de Sebastián.
 
 ## Preguntas abiertas (PER-137)

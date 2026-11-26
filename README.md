@@ -25,7 +25,10 @@ npm run dev       # http://localhost:5173
 npm test          # pruebas de reglas, seed y acciones (vitest)
 npm run build     # build de producción en web/dist
 npm run preview   # sirve el build en http://localhost:4173
+npm run fotos     # regenera las fotos optimizadas (public/fotos) desde fotos-originales/
 ```
+
+**Fotos:** los originales van en `web/fotos-originales/` y `npm run fotos` genera WebP en tres anchos, sin metadatos, en `web/public/fotos/` (ese resultado se commitea; Vercel no lo regenera). La app las pide con `srcset`, así cada pantalla baja solo el tamaño que necesita. Para sumar una: copiar el original, agregarla en `scripts/optimizar-fotos.mjs` y en `src/lib/fotos.ts`, y correr el script.
 
 En el pie de la app están **Hoy en el demo** (por defecto 26/11/2026) y **Reiniciar datos de demo**. Los cambios se guardan en el `localStorage` del navegador.
 

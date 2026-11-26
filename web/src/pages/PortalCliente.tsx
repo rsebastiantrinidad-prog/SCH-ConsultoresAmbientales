@@ -1,7 +1,7 @@
 import { ArrowLeft, CalendarClock, CheckCircle2, Eye, Upload, UserRound } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { BarraAvance, ETIQUETA_ESTADO_SERVICIO } from '../components/ficha/comun'
+import { BarraAvance, ETIQUETA_ESTADO_SERVICIO, FotoServicio } from '../components/ficha/comun'
 import { Logo } from '../components/Marca'
 import { EstadoDocumentoPastilla } from '../components/ui'
 import { fechaCorta, relativo } from '../lib/formato'
@@ -108,7 +108,9 @@ export default function PortalCliente() {
               </h2>
               <ul className="grid gap-3 sm:grid-cols-2">
                 {v.servicios.map((s) => (
-                  <li key={s.id} className="space-y-2 rounded-[4px] border border-sch-black/15 p-4">
+                  <li key={s.id} className="overflow-hidden rounded-[4px] border border-sch-black/15">
+                    <FotoServicio categoria={s.categoria} />
+                    <div className="space-y-2 p-4">
                     <div className="flex items-start justify-between gap-2">
                       <h3 className="text-lg font-bold">{s.nombre}</h3>
                       <span className="rounded-full border border-sch-black/30 px-2.5 py-0.5 font-display text-xs font-bold">{ETIQUETA_ESTADO_SERVICIO[s.estado]}</span>
@@ -121,6 +123,7 @@ export default function PortalCliente() {
                         Próxima visita: {fechaCorta(s.proxima_fecha)} ({relativo(hoy, s.proxima_fecha)})
                       </p>
                     )}
+                    </div>
                   </li>
                 ))}
               </ul>

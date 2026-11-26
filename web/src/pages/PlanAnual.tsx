@@ -1,6 +1,7 @@
 import { ClipboardCheck, MapPin, Move, RefreshCw } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { BannerFoto } from '../components/Foto'
 import Modal from '../components/Modal'
 import { Semaforo, TituloSeccion } from '../components/ui'
 import { diasEntre, fechaCorta, fechaLarga, mesDe, nombreMes, sumarMesesAMes } from '../lib/formato'
@@ -45,6 +46,11 @@ export default function PlanAnual() {
   return (
     <div className="space-y-5">
       <TituloSeccion as="h1">Plan anual</TituloSeccion>
+
+      <BannerFoto nombre="auditoria-planta" posicion="20% 30%" className="rounded-[4px] px-5 py-6 sm:px-8 sm:py-8">
+        <p className="max-w-xl font-display text-xl font-bold leading-snug text-white sm:text-2xl">Los servicios del año, planificados y a la vista.</p>
+        <p className="mt-2 max-w-xl text-sm text-white/85">Visitas, auditorías y renovaciones de cada cliente en los próximos 12 meses, para ofrecerlos ordenados.</p>
+      </BannerFoto>
 
       <div className="flex flex-wrap items-end gap-x-6 gap-y-3">
         <label className="block space-y-1">

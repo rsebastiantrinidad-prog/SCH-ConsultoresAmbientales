@@ -14,7 +14,7 @@ export default function TarjetaIndicador({
   return (
     <Link
       to={a}
-      className="group flex min-h-36 flex-col justify-between gap-3 rounded-[4px] border-t-4 border-sch-green bg-white/[0.07] p-4 no-underline ring-1 ring-white/20 outline-offset-2 backdrop-blur-[1px] transition hover:bg-white/[0.12] hover:ring-sch-mint sm:p-5"
+      className="group flex min-h-36 flex-col justify-between gap-3 rounded-[4px] border-t-4 border-sch-green bg-sch-black/55 p-4 no-underline ring-1 ring-white/20 outline-offset-2 backdrop-blur-sm transition hover:bg-sch-black/70 hover:ring-sch-mint sm:p-5"
     >
       <span className="flex items-start justify-between gap-2">
         <span className="font-display text-sm font-semibold leading-tight text-white sm:text-base">{titulo}</span>

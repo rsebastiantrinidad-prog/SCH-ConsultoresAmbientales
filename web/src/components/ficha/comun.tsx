@@ -1,6 +1,10 @@
-import type { Datos, EstadoServicio, ServicioCliente } from '../../lib/tipos'
+import { Recycle, Wind } from 'lucide-react'
+import { FOTO_CATEGORIA } from '../../lib/fotos'
+import type { CategoriaServicio, Datos, EstadoServicio, ServicioCliente } from '../../lib/tipos'
+import { Foto } from '../Foto'
 
 export const nombreServicio = (datos: Datos, s: ServicioCliente) => datos.catalogo.find((c) => c.id === s.servicio_id)?.nombre ?? s.servicio_id
+export const categoriaServicio = (datos: Datos, s: ServicioCliente) => datos.catalogo.find((c) => c.id === s.servicio_id)?.categoria
 
 export const ETIQUETA_ESTADO_SERVICIO: Record<EstadoServicio, string> = {
   propuesta: 'Propuesta',
@@ -36,4 +40,21 @@ export function BarraAvance({ valor, etiqueta }: { valor: number; etiqueta?: str
 
 export function Vacio({ children }: { children: React.ReactNode }) {
   return <p className="rounded-[4px] bg-sch-surface p-5 text-sch-muted">{children}</p>
+}
+
+/**
+ * Franja de foto arriba de la tarjeta de un servicio. Las categorías sin foto (residuos, otros)
+ * usan el patrón de hojas con un ícono, para que todas las tarjetas tengan la misma forma.
+ */
+export function FotoServicio({ categoria }: { categoria: CategoriaServicio | undefined }) {
+  const foto = categoria ? FOTO_CATEGORIA[categoria] : undefined
+  if (foto) {
+    return <Foto nombre={foto} sizes="(min-width: 768px) 480px, 100vw" className="h-28 w-full rounded-t-[4px] object-cover" />
+  }
+  const Icono = categoria === 'residuos' ? Recycle : Wind
+  return (
+    <div className="fondo-hojas flex h-28 items-center justify-center rounded-t-[4px]" aria-hidden>
+      <Icono className="h-10 w-10 text-sch-mint" />
+    </div>
+  )
 }

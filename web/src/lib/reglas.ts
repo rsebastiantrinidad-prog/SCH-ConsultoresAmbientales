@@ -4,7 +4,7 @@
  */
 import { diasEntre, fechaCorta, sumarDias, sumarMeses } from './formato'
 import type {
-  Cliente, Datos, Documento, Etapa, EstadoDocumento, Fecha, Recordatorio, Semaforo, ServicioCliente, TipoRecordatorio,
+  CategoriaServicio, Cliente, Datos, Documento, Etapa, EstadoDocumento, Fecha, Recordatorio, Semaforo, ServicioCliente, TipoRecordatorio,
 } from './tipos'
 import { nombreUsuario, type IdUsuario } from './usuario'
 
@@ -330,6 +330,7 @@ export function planAnual(datos: Datos, clienteId: string, desdeMes: string): Fi
 export interface ServicioParaCliente {
   id: string
   nombre: string
+  categoria: CategoriaServicio | undefined
   estado: ServicioCliente['estado']
   avance: number
   etapa: string | null
@@ -383,7 +384,7 @@ export function vistaCliente(datos: Datos, clienteId: string, hoy: Fecha): Vista
     responsable_id: cliente.responsable_id,
     servicios: servicios.map((s) => {
       const etapas = etapasDeServicio(datos, s.id)
-      return { id: s.id, nombre: nombre(s), estado: s.estado, avance: avance(etapas), etapa: s.estado === 'en_curso' ? (etapaActual(etapas)?.nombre ?? null) : null, proxima_fecha: s.proxima_fecha }
+      return { id: s.id, nombre: nombre(s), categoria: datos.catalogo.find((c) => c.id === s.servicio_id)?.categoria, estado: s.estado, avance: avance(etapas), etapa: s.estado === 'en_curso' ? (etapaActual(etapas)?.nombre ?? null) : null, proxima_fecha: s.proxima_fecha }
     }),
     necesitamos: docs
       .filter(urgente)

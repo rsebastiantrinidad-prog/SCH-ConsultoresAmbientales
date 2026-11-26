@@ -4,6 +4,7 @@ import { useSearchParams } from 'react-router-dom'
 import CalendarioRecordatorios from '../components/CalendarioRecordatorios'
 import FilaRecordatorio, { TIPO_RECORDATORIO } from '../components/FilaRecordatorio'
 import FiltroResponsable from '../components/FiltroResponsable'
+import { BannerFoto } from '../components/Foto'
 import { ChipQuitable, MultiFiltro, TituloSeccion } from '../components/ui'
 import VistaPreviaAviso from '../components/VistaPreviaAviso'
 import { mesDe } from '../lib/formato'
@@ -89,9 +90,12 @@ export default function Recordatorios() {
         Recordatorios
       </TituloSeccion>
 
-      <p className="max-w-3xl text-sch-muted">
-        Se calculan solos desde las vigencias de los documentos, los pendientes y las visitas de cada servicio. Avisan con anticipación (60 días para vencimientos, valores de ejemplo).
-      </p>
+      <BannerFoto nombre="carpetas-vencimientos" posicion="center 60%" className="rounded-[4px] px-5 py-6 sm:px-8 sm:py-8">
+        <p className="max-w-xl font-display text-xl font-bold leading-snug text-white sm:text-2xl">Sin carpetas ni calendarios en papel: los vencimientos se calculan solos y llegan con tiempo.</p>
+        <p className="mt-2 max-w-xl text-sm text-white/85">
+          Salen de las vigencias de los documentos, los pendientes y las visitas de cada servicio. Avisan con anticipación (60 días para vencimientos, valores de ejemplo).
+        </p>
+      </BannerFoto>
 
       {/* Filtros */}
       <div className="space-y-3">

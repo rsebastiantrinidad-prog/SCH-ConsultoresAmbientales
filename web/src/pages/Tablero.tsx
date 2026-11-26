@@ -1,6 +1,7 @@
 import { CalendarClock, ChevronRight, ClipboardList, FileWarning, FolderOpen, Hourglass, MapPin, MessageSquareWarning, Users } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import FiltroResponsable from '../components/FiltroResponsable'
+import { BannerFoto } from '../components/Foto'
 import TarjetaIndicador from '../components/TarjetaIndicador'
 import { Semaforo, TituloSeccion } from '../components/ui'
 import { diaMes, diasEntre, fechaLarga, relativo } from '../lib/formato'
@@ -28,8 +29,8 @@ export default function Tablero() {
 
   return (
     <div className="space-y-8">
-      {/* Encabezado: fondo negro con hojas, tesis del demo y filtro por responsable */}
-      <section className="fondo-hojas -mx-4 -mt-6 px-4 pb-6 pt-7 sm:-mt-8 sm:rounded-b-[4px] lg:mx-0 lg:px-8">
+      {/* Encabezado: foto de planta con velo oscuro, tesis del demo y filtro por responsable */}
+      <BannerFoto nombre="ingeniera-planta" prioridad posicion="70% center" className="-mx-4 -mt-6 px-4 pb-6 pt-7 sm:-mt-8 sm:rounded-b-[4px] lg:mx-0 lg:px-8">
         <p className="text-sm text-sch-mint first-letter:uppercase">{fechaLarga(hoy)}</p>
         <h1 className="mt-1 text-3xl font-bold text-white sm:text-[40px] sm:leading-tight">{saludo}</h1>
         <p className="mt-2 max-w-2xl text-white/85">Qué vence, qué falta y qué avanza, sin abrir carpetas.</p>
@@ -55,7 +56,7 @@ export default function Tablero() {
           />
           <TarjetaIndicador titulo="Trámites en curso" valor={ind.tramites_en_curso} a="/clientes?ver=tramites" Icono={ClipboardList} />
         </div>
-      </section>
+      </BannerFoto>
 
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Esta semana */}
