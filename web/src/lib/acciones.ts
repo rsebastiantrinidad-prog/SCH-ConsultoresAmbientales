@@ -4,7 +4,7 @@
  */
 import { fechaCorta, sumarDias, sumarMeses } from './formato'
 import { ANTICIPACION_DIAS, derivarRecordatorios, etapaActual, etapasDeServicio, fechaPospuesta } from './reglas'
-import type { CargaDocumento, Cliente, Datos, Documento, Etapa, EstadoRecordatorio, Fecha, Nota } from './tipos'
+import type { CargaDocumento, Cliente, Datos, Documento, Etapa, EstadoRecordatorio, Fecha, Nota, Recordatorio } from './tipos'
 import type { IdUsuario } from './usuario'
 
 export interface Contexto {
@@ -153,9 +153,12 @@ export function posponer(datos: Datos, ctx: Contexto, id: string): Datos {
   return { ...conAjuste, notas: [...conAjuste.notas, nota(ctx, r.cliente_id, r.servicio_cliente_id, `Recordatorio pospuesto: ${r.titulo}, del ${fechaCorta(r.fecha)} al ${fechaCorta(nueva)}.`, true)] }
 }
 
-/** "Simular envío": no se envía nada; queda como enviado y en la bitácora. */
-export function simularEnvio(datos: Datos, ctx: Contexto, id: string, canal: string): Datos {
-  const r = recordatorio(datos, id)
-  const conAjuste = ajustar(datos, id, 'enviado')
+/**
+ * "Simular envío": no se envía nada; queda en la bitácora y, si el recordatorio es uno de los derivados, como enviado.
+ * Recibe el recordatorio entero porque "Pedir al cliente" puede armar uno que no existe todavía (un pendiente sin fecha).
+ */
+export function simularEnvio(datos: Datos, ctx: Contexto, r: Recordatorio, canal: string): Datos {
+  const existe = derivarRecordatorios(datos).some((x) => x.id === r.id)
+  const conAjuste = existe ? ajustar(datos, r.id, 'enviado') : datos
   return { ...conAjuste, notas: [...conAjuste.notas, nota(ctx, r.cliente_id, r.servicio_cliente_id, `Aviso simulado por ${canal}: ${r.titulo}.`, true)] }
 }

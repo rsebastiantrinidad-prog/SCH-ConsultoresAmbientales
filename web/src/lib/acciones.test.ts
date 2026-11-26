@@ -99,7 +99,7 @@ describe('recordatorios', () => {
     expect(derivarRecordatorios(datos).find((x) => x.id === r.id)).toMatchObject({ estado: 'hecho', fecha: sumarDias(r.fecha, 7) })
   })
   it('simular envío lo marca enviado y deja nota, sin enviar nada', () => {
-    const datos = simularEnvio(base, ctx, r.id, 'Mail')
+    const datos = simularEnvio(base, ctx, r, 'Mail')
     expect(derivarRecordatorios(datos).find((x) => x.id === r.id)!.estado).toBe('enviado')
     expect(datos.notas.at(-1)!.texto).toContain('Aviso simulado por Mail')
   })

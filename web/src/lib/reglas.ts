@@ -307,6 +307,42 @@ export function variablesFaltantes(texto: string): string[] {
   return [...texto.matchAll(/\{(\w+)\}/g)].map((m) => m[1])
 }
 
-export function textoAviso(datos: Datos, r: Recordatorio): string {
-  return rellenarPlantilla(PLANTILLAS_AVISO[r.tipo], variablesAviso(datos, r))
+/** Para un vencimiento que ya pasó: se pide la renovación. */
+export const PLANTILLA_VENCIDO =
+  'Hola, {cliente}. Te escribimos de SCH Consultores Ambientales: {documento} venció el {fecha}. Hay que renovarlo cuanto antes; avisanos y lo coordinamos. Saludos, {responsable}.'
+
+/** Plantilla que corresponde al recordatorio; si se pasa `hoy`, un vencimiento pasado usa la de "venció". */
+export function plantillaAviso(r: Recordatorio, hoy?: Fecha): string {
+  if (r.tipo === 'vencimiento' && hoy && diasEntre(hoy, r.fecha) < 0) return PLANTILLA_VENCIDO
+  return PLANTILLAS_AVISO[r.tipo]
+}
+
+export function textoAviso(datos: Datos, r: Recordatorio, hoy?: Fecha): string {
+  return rellenarPlantilla(plantillaAviso(r, hoy), variablesAviso(datos, r))
+}
+
+/** Asunto del mail del aviso. */
+export function asuntoAviso(datos: Datos, r: Recordatorio, hoy?: Fecha): string {
+  const v = variablesAviso(datos, r)
+  if (r.tipo === 'vencimiento') return `${v.documento}: ${hoy && diasEntre(hoy, r.fecha) < 0 ? 'venció' : 'vence'} el ${v.fecha}`
+  if (r.tipo === 'pedido_documentacion') return `Necesitamos ${v.documento}`
+  if (r.tipo === 'visita') return `Visita programada el ${v.fecha}`
+  return `Observación sobre ${v.documento}`
+}
+
+/**
+ * Recordatorio para "Pedir al cliente" desde un documento: el derivado si existe (vencimiento, pedido o seguimiento);
+ * si no (un pendiente sin fecha), uno de pedido de documentación para dentro de 14 días.
+ */
+export function recordatorioDeDocumento(datos: Datos, docId: string, hoy: Fecha): Recordatorio | null {
+  const derivado = derivarRecordatorios(datos).find((r) => r.documento_id === docId)
+  if (derivado) return derivado
+  const d = datos.documentos.find((x) => x.id === docId)
+  const s = d && datos.servicios.find((x) => x.id === d.servicio_cliente_id)
+  if (!d || !s) return null
+  return {
+    id: `ped-${d.id}`, tipo: 'pedido_documentacion', fecha: d.fecha_objetivo ?? sumarDias(hoy, DIAS_FALTANTE), anticipacion_dias: ANTICIPACION_PEDIDO,
+    canal: 'whatsapp', estado: 'programado', asignado_a: s.responsable_id, cliente_id: s.cliente_id, servicio_cliente_id: s.id, documento_id: d.id,
+    titulo: `Pedir ${d.nombre}`,
+  }
 }

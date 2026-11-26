@@ -7,7 +7,7 @@ import { useSyncExternalStore } from 'react'
 import * as acciones from './acciones'
 import { HOY_POR_DEFECTO } from './formato'
 import { construirSeed } from './seed'
-import type { CargaDocumento, Datos, Fecha } from './tipos'
+import type { CargaDocumento, Datos, Fecha, Recordatorio } from './tipos'
 import { usuarioActual, type IdUsuario } from './usuario'
 
 /** Subir este número cuando cambie la forma de los datos: lo guardado con otra versión se descarta. */
@@ -99,8 +99,8 @@ export const api = {
   adjuntarArchivo: (docId: string, nombre: string) => aplicar((d) => acciones.adjuntarArchivo(d, ctx(clienteDeDocumento(docId)), docId, nombre)),
   marcarHecho: (recordatorioId: string) => aplicar((d) => acciones.marcarHecho(d, recordatorioId)),
   posponer: (recordatorioId: string) => aplicar((d) => acciones.posponer(d, ctx(clienteDeRecordatorio(recordatorioId)), recordatorioId)),
-  simularEnvio: (recordatorioId: string, canal: string) =>
-    aplicar((d) => acciones.simularEnvio(d, ctx(clienteDeRecordatorio(recordatorioId)), recordatorioId, canal)),
+  simularEnvio: (r: Recordatorio, canal: string) =>
+    aplicar((d) => acciones.simularEnvio(d, ctx(r.cliente_id), r, canal)),
 
   /** Cambia el "hoy" del demo; los datos no se tocan (es como si pasara el tiempo). */
   cambiarHoy: (hoy: Fecha) => guardar({ ...estado, hoy }),
