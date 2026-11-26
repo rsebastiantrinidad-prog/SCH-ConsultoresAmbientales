@@ -178,3 +178,23 @@ export function moverProximaFecha(datos: Datos, ctx: Contexto, servicioId: strin
     notas: [...datos.notas, nota(ctx, s.cliente_id, servicioId, `Visita reprogramada del ${fechaCorta(anterior)} al ${fechaCorta(fecha)}.`, true)],
   }
 }
+
+// ---------------------------------------------------------------- Vista del cliente
+
+/**
+ * El cliente sube un documento desde su vista (simulado: solo el nombre del archivo).
+ * Pendientes, observados y vencidos pasan a "En revisión" y se avisa al responsable en la bitácora.
+ */
+export function subirDocumentoCliente(datos: Datos, ctx: Contexto, docId: string, nombreArchivo: string): Datos {
+  const d = datos.documentos.find((x) => x.id === docId)
+  if (!d) throw new Error(`No existe el documento ${docId}`)
+  const s = datos.servicios.find((x) => x.id === d.servicio_cliente_id)!
+  const conArchivo = cambiarDocumento(datos, docId, (x) => ({
+    ...x, archivo: nombreArchivo, carga: 'en_revision', observacion: null, revisado_por: null, fecha_revision: null, fecha_emision: ctx.hoy,
+  }))
+  const aviso: Nota = {
+    id: ctx.nuevoId('nota'), cliente_id: s.cliente_id, servicio_cliente_id: s.id, autor_id: s.responsable_id, fecha: ctx.hoy,
+    texto: `El cliente subió "${nombreArchivo}" para ${d.nombre}. Queda en revisión.`, automatica: true,
+  }
+  return { ...conArchivo, notas: [...conArchivo.notas, aviso] }
+}

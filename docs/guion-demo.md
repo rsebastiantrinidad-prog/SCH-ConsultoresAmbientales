@@ -21,7 +21,12 @@ Spec completo en [spec-demo.md](spec-demo.md).
 | 7–9 | Plan anual | Alimentos del Centro (sale primero): 2 auditorías de ISO, 1 visita de residuos y 5 renovaciones en 12 meses. Tocar la visita de residuos y moverla. | "Los servicios del año quedan planificados y se pueden ofrecer ordenados." |
 | 9–10 | Cierre | Volver al tablero. | "¿Qué es lo que más falta acá y qué sobra?" |
 
-Si sobra tiempo: en la ficha de Metalúrgica, pestaña **Documentación**, cambiar la fecha del análisis vencido a una fecha futura. El cliente pasa de rojo a ámbar y el tablero baja a "1 ya vencido".
+Si sobra tiempo:
+
+- **Documentación:** en la ficha de Metalúrgica, pestaña **Documentación**, cambiar la fecha del análisis vencido a una fecha futura. El cliente pasa de rojo a ámbar y el tablero baja a "1 ya vencido".
+- **Vista del cliente (P2, 1 minuto):** en la ficha del Loteo, **Ver como el cliente** (o en el selector de la barra, **Cliente (demo)**). El cliente ve cómo va su licencia y los tres documentos que faltan; **Subir documento** pasa el plano a "En revisión". Con **Volver a SCH Gestión**, la ficha muestra el documento en revisión y la nota para Karina. Frase: "El cliente manda lo que falta sin que tengan que perseguirlo."
+
+Para la vista del cliente conviene llevar un PDF cualquiera en la notebook: solo se toma su nombre, el archivo no se lee ni se guarda.
 
 ## Criterios de aceptación (spec)
 
@@ -50,6 +55,6 @@ Verificado el 26/11/2026 sobre el build de producción (`npm run build` + `vite 
 
 ## Preguntas abiertas (PER-137)
 
-- ¿Se muestra la vista del cliente (P2) o se deja para una segunda reunión?
+- Vista del cliente: está hecha (H8); queda como paso opcional del guion, según cómo venga el tiempo.
 - ¿Con qué nombre se presenta el sistema? Provisorio: "SCH Gestión".
 - ¿Se muestra una cifra de ahorro de horas? Sin los datos del relevamiento, no hay base para una.

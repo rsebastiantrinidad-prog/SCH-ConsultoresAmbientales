@@ -325,6 +325,73 @@ export function planAnual(datos: Datos, clienteId: string, desdeMes: string): Fi
     })
 }
 
+// ---------------------------------------------------------------- Vista del cliente
+
+export interface ServicioParaCliente {
+  id: string
+  nombre: string
+  estado: ServicioCliente['estado']
+  avance: number
+  etapa: string | null
+  proxima_fecha: Fecha | null
+}
+
+export interface DocumentoParaCliente {
+  id: string
+  nombre: string
+  servicio: string
+  estado: EstadoDocumento
+  /** Vencimiento o fecha para la que se necesita. */
+  fecha: Fecha | null
+  /** Observación a resolver (es para el cliente; las notas internas nunca se muestran). */
+  observacion: string | null
+}
+
+export interface VistaCliente {
+  razon_social: string
+  contacto_nombre: string
+  responsable_id: IdUsuario
+  servicios: ServicioParaCliente[]
+  /** Lo que el cliente tiene que mandar: pendientes, observados, vencidos y por vencer. */
+  necesitamos: DocumentoParaCliente[]
+  /** Lo que está al día o en revisión. */
+  al_dia: DocumentoParaCliente[]
+}
+
+const ORDEN_NECESITAMOS: Partial<Record<EstadoDocumento, number>> = { vencido: 0, observado: 1, pendiente: 2, por_vencer: 3 }
+
+/** Lo que ve el cliente de sí mismo: sus servicios y documentos, sin notas internas ni datos de otros clientes. */
+export function vistaCliente(datos: Datos, clienteId: string, hoy: Fecha): VistaCliente | null {
+  const cliente = datos.clientes.find((c) => c.id === clienteId)
+  if (!cliente) return null
+  const servicios = datos.servicios.filter((s) => s.cliente_id === clienteId && s.estado !== 'propuesta')
+  const nombre = (s: ServicioCliente) => datos.catalogo.find((c) => c.id === s.servicio_id)?.nombre ?? s.servicio_id
+  const docs: DocumentoParaCliente[] = datos.documentos
+    .filter((d) => servicios.some((s) => s.id === d.servicio_cliente_id))
+    .map((d) => ({
+      id: d.id,
+      nombre: d.nombre,
+      servicio: nombre(servicios.find((s) => s.id === d.servicio_cliente_id)!),
+      estado: estadoDocumento(d, hoy),
+      fecha: d.carga === 'pendiente' ? d.fecha_objetivo : d.vigente_hasta,
+      observacion: d.carga === 'observado' ? d.observacion : null,
+    }))
+  const urgente = (x: DocumentoParaCliente) => x.estado in ORDEN_NECESITAMOS
+  return {
+    razon_social: cliente.razon_social,
+    contacto_nombre: cliente.contacto_nombre,
+    responsable_id: cliente.responsable_id,
+    servicios: servicios.map((s) => {
+      const etapas = etapasDeServicio(datos, s.id)
+      return { id: s.id, nombre: nombre(s), estado: s.estado, avance: avance(etapas), etapa: s.estado === 'en_curso' ? (etapaActual(etapas)?.nombre ?? null) : null, proxima_fecha: s.proxima_fecha }
+    }),
+    necesitamos: docs
+      .filter(urgente)
+      .sort((a, b) => ORDEN_NECESITAMOS[a.estado]! - ORDEN_NECESITAMOS[b.estado]! || (a.fecha ?? '9999').localeCompare(b.fecha ?? '9999')),
+    al_dia: docs.filter((x) => !urgente(x)).sort((a, b) => a.servicio.localeCompare(b.servicio) || a.nombre.localeCompare(b.nombre)),
+  }
+}
+
 // ---------------------------------------------------------------- Regla 6: avisos
 
 export const VARIABLES_AVISO = ['cliente', 'documento', 'fecha', 'responsable'] as const

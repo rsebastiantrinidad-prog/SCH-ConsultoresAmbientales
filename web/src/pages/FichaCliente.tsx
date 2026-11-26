@@ -1,4 +1,4 @@
-import { ArrowLeft, ChevronLeft, ChevronRight, Mail, MapPin, Pencil, Phone, UserRound } from 'lucide-react'
+import { ArrowLeft, ChevronLeft, ChevronRight, Eye, Mail, MapPin, Pencil, Phone, UserRound } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import Documentacion from '../components/ficha/Documentacion'
@@ -113,10 +113,16 @@ export default function FichaCliente() {
               {motivo && <span className={`text-sm font-semibold ${semaforo === 'rojo' ? 'text-sch-red' : ''}`}>{motivo}</span>}
             </div>
           </div>
-          <button type="button" className="boton-secundario" onClick={() => setEditando(true)}>
-            <Pencil className="h-4 w-4" aria-hidden />
-            Editar datos
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <Link to={`/portal/${cliente.id}`} className="boton-secundario no-underline" title="Lo que ve el cliente en su portal (demo)">
+              <Eye className="h-4 w-4" aria-hidden />
+              Ver como el cliente
+            </Link>
+            <button type="button" className="boton-secundario" onClick={() => setEditando(true)}>
+              <Pencil className="h-4 w-4" aria-hidden />
+              Editar datos
+            </button>
+          </div>
         </div>
         <dl className="grid gap-x-6 gap-y-1.5 text-sm sm:grid-cols-2 lg:grid-cols-4">
           <Dato Icono={MapPin} etiqueta="Rubro y localidad">

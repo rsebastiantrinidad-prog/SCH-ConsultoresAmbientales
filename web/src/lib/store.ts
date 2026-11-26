@@ -102,6 +102,8 @@ export const api = {
   simularEnvio: (r: Recordatorio, canal: string) =>
     aplicar((d) => acciones.simularEnvio(d, ctx(r.cliente_id), r, canal)),
 
+  subirDocumentoCliente: (docId: string, nombreArchivo: string) =>
+    aplicar((d) => acciones.subirDocumentoCliente(d, ctx(clienteDeDocumento(docId)), docId, nombreArchivo)),
   moverProximaFecha: (servicioId: string, fecha: Fecha) =>
     aplicar((d) => acciones.moverProximaFecha(d, ctx(clienteDeServicio(servicioId)), servicioId, fecha)),
 
