@@ -1,4 +1,6 @@
-import { addDays, addMonths, differenceInCalendarDays, format, parseISO } from 'date-fns'
+import {
+  addDays, addMonths, differenceInCalendarDays, eachDayOfInterval, endOfMonth, endOfWeek, format, parseISO, startOfMonth, startOfWeek,
+} from 'date-fns'
 import { es } from 'date-fns/locale'
 import type { Fecha } from './tipos'
 
@@ -23,6 +25,24 @@ export const fechaLarga = (f: Fecha): string => format(parseISO(f), "EEEE d 'de'
 export const diaMes = (f: Fecha): { dia: string; mes: string } => {
   const d = parseISO(f)
   return { dia: format(d, 'd'), mes: format(d, 'MMM', { locale: es }).replace('.', '') }
+}
+
+/** Mes en formato 'YYYY-MM' de una fecha. */
+export const mesDe = (f: Fecha): string => f.slice(0, 7)
+
+/** "noviembre de 2026" */
+export const nombreMes = (mes: string): string => format(parseISO(`${mes}-01`), "MMMM 'de' yyyy", { locale: es })
+
+export const sumarMesesAMes = (mes: string, n: number): string => mesDe(sumarMeses(`${mes}-01`, n))
+
+/** Semanas (de lunes a domingo) que cubren el mes, con los días de los meses vecinos para completar. */
+export function semanasDelMes(mes: string): Fecha[][] {
+  const inicio = startOfWeek(startOfMonth(parseISO(`${mes}-01`)), { weekStartsOn: 1 })
+  const fin = endOfWeek(endOfMonth(parseISO(`${mes}-01`)), { weekStartsOn: 1 })
+  const dias = eachDayOfInterval({ start: inicio, end: fin }).map(iso)
+  const semanas: Fecha[][] = []
+  for (let i = 0; i < dias.length; i += 7) semanas.push(dias.slice(i, i + 7))
+  return semanas
 }
 
 /** "hoy", "mañana", "en 5 días", "ayer", "hace 3 días". */
