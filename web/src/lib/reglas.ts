@@ -4,9 +4,9 @@
  */
 import { diasEntre, fechaCorta, sumarDias } from './formato'
 import type {
-  Datos, Documento, Etapa, EstadoDocumento, Fecha, Recordatorio, Semaforo, ServicioCliente, TipoRecordatorio,
+  Cliente, Datos, Documento, Etapa, EstadoDocumento, Fecha, Recordatorio, Semaforo, ServicioCliente, TipoRecordatorio,
 } from './tipos'
-import { nombreUsuario } from './usuario'
+import { nombreUsuario, type IdUsuario } from './usuario'
 
 /** Anticipación por defecto para pasar a "Por vencer" (valor de ejemplo, no normativa). */
 export const ANTICIPACION_DIAS = 60
@@ -142,6 +142,130 @@ export function grupoRecordatorio(r: Recordatorio, hoy: Fecha): GrupoRecordatori
 /** Regla 7: posponer mueve la fecha 7 días. */
 export function fechaPospuesta(r: Recordatorio): Fecha {
   return sumarDias(r.fecha, DIAS_POSPONER)
+}
+
+// ---------------------------------------------------------------- Tablero y lista de clientes
+
+/** Filtro por responsable: 'todos' o el id de un socio. */
+export type FiltroResponsable = IdUsuario | 'todos'
+
+const deResponsable = (f: FiltroResponsable) => (id: IdUsuario) => f === 'todos' || id === f
+
+/** Días hacia adelante que cuenta "Vencimientos en 30 días". */
+export const DIAS_VENCIMIENTOS = 30
+
+export interface Indicadores {
+  clientes_activos: number
+  /** Documentos que vencen de hoy a 30 días. */
+  vencimientos_30: number
+  /** Documentos que ya vencieron (se muestran como dato extra). */
+  vencidos: number
+  documentacion_faltante: number
+  clientes_con_faltante: number
+  tramites_en_curso: number
+}
+
+/** Los cuatro indicadores del tablero, calculados desde los datos (filtrados por responsable). */
+export function indicadores(datos: Datos, hoy: Fecha, filtro: FiltroResponsable = 'todos'): Indicadores {
+  const es = deResponsable(filtro)
+  const clientes = datos.clientes.filter((c) => c.estado === 'activo' && es(c.responsable_id))
+  const ids = new Set(clientes.map((c) => c.id))
+  const servicios = datos.servicios.filter((s) => ids.has(s.cliente_id))
+  const clienteDe = new Map(servicios.map((s) => [s.id, s.cliente_id]))
+  const docs = datos.documentos.filter((d) => clienteDe.has(d.servicio_cliente_id))
+
+  let vencimientos_30 = 0
+  let vencidos = 0
+  const faltantes = docs.filter((d) => esFaltante(d, hoy))
+  for (const d of docs) {
+    const e = estadoDocumento(d, hoy)
+    if (e === 'vencido') vencidos++
+    else if (d.vigente_hasta && (e === 'por_vencer' || e === 'vigente') && diasEntre(hoy, d.vigente_hasta) <= DIAS_VENCIMIENTOS) vencimientos_30++
+  }
+  return {
+    clientes_activos: clientes.length,
+    vencimientos_30,
+    vencidos,
+    documentacion_faltante: faltantes.length,
+    clientes_con_faltante: new Set(faltantes.map((d) => clienteDe.get(d.servicio_cliente_id))).size,
+    tramites_en_curso: servicios.filter((s) => s.estado === 'en_curso').length,
+  }
+}
+
+/** Lista "Esta semana": lo atrasado y lo de los próximos 7 días que no está hecho, lo más urgente primero. */
+export function recordatoriosSemana(datos: Datos, hoy: Fecha, filtro: FiltroResponsable = 'todos'): Recordatorio[] {
+  const es = deResponsable(filtro)
+  return derivarRecordatorios(datos).filter((r) => {
+    if (r.estado === 'hecho' || !es(r.asignado_a)) return false
+    const g = grupoRecordatorio(r, hoy)
+    return g === 'vencidos' || g === 'esta_semana'
+  })
+}
+
+const ORDEN_SEMAFORO: Record<Semaforo, number> = { rojo: 0, ambar: 1, verde: 2 }
+
+export interface FilaCliente {
+  cliente: Cliente
+  semaforo: Semaforo
+  servicios_activos: number
+  /** Próximo vencimiento de un documento (o el último ya vencido, si hay). */
+  proximo_vencimiento: { fecha: Fecha; documento: string } | null
+  faltantes: number
+  tramites_en_curso: number
+}
+
+/** Una fila por cliente con lo que muestra la tabla de Clientes. */
+export function filasClientes(datos: Datos, hoy: Fecha): FilaCliente[] {
+  return datos.clientes.map((cliente) => {
+    const servicios = datos.servicios.filter((s) => s.cliente_id === cliente.id)
+    const docs = documentosDeCliente(datos, cliente.id)
+    const conFecha = docs.filter((d) => (d.carga === 'revisado' || d.carga === 'en_revision') && d.vigente_hasta)
+    conFecha.sort((a, b) => a.vigente_hasta!.localeCompare(b.vigente_hasta!))
+    const proximo = conFecha[0]
+    return {
+      cliente,
+      semaforo: semaforoDocumentos(docs, hoy),
+      servicios_activos: servicios.filter((s) => s.estado === 'en_curso' || s.estado === 'vigente').length,
+      proximo_vencimiento: proximo ? { fecha: proximo.vigente_hasta!, documento: proximo.nombre } : null,
+      faltantes: docs.filter((d) => esFaltante(d, hoy)).length,
+      tramites_en_curso: servicios.filter((s) => s.estado === 'en_curso').length,
+    }
+  })
+}
+
+/**
+ * Por qué el cliente no está en verde, en una frase corta: lo más grave primero
+ * (vencido, observado, faltante, por vencer). null si está al día.
+ */
+export function motivoSemaforo(datos: Datos, clienteId: string, hoy: Fecha): string | null {
+  const docs = documentosDeCliente(datos, clienteId).map((d) => ({ d, e: estadoDocumento(d, hoy) }))
+  const porFecha = (a: { d: Documento }, b: { d: Documento }) => (a.d.vigente_hasta ?? '').localeCompare(b.d.vigente_hasta ?? '')
+  const vencidos = docs.filter((x) => x.e === 'vencido').sort(porFecha)
+  const extra = (n: number) => (n > 1 ? ` (y ${n - 1} más)` : '')
+  if (vencidos.length) {
+    const { d } = vencidos[0]
+    return `${d.nombre} venció hace ${-diasEntre(hoy, d.vigente_hasta!)} días${extra(vencidos.length)}`
+  }
+  const observados = docs.filter((x) => x.e === 'observado')
+  if (observados.length) return `${observados[0].d.nombre} observado${extra(observados.length)}`
+  const faltantes = docs.filter((x) => esFaltante(x.d, hoy)).length
+  if (faltantes) return `${faltantes} ${faltantes === 1 ? 'documento falta' : 'documentos faltan'}`
+  const porVencer = docs.filter((x) => x.e === 'por_vencer').sort(porFecha)
+  if (porVencer.length) {
+    const { d } = porVencer[0]
+    const n = diasEntre(hoy, d.vigente_hasta!)
+    return `${d.nombre} vence ${n === 0 ? 'hoy' : `en ${n} días`}${extra(porVencer.length)}`
+  }
+  return null
+}
+
+/** Orden por defecto de la tabla: peor semáforo primero y, dentro de cada color, el vencimiento más cercano. */
+export function compararFilas(a: FilaCliente, b: FilaCliente): number {
+  return (
+    ORDEN_SEMAFORO[a.semaforo] - ORDEN_SEMAFORO[b.semaforo] ||
+    (a.proximo_vencimiento?.fecha ?? '9999').localeCompare(b.proximo_vencimiento?.fecha ?? '9999') ||
+    a.cliente.razon_social.localeCompare(b.cliente.razon_social)
+  )
 }
 
 // ---------------------------------------------------------------- Regla 6: avisos

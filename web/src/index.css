@@ -52,78 +52,89 @@
   }
 }
 
-/* Título de sección: Cabin 700 con línea fina verde clara debajo, como "Servicios" en el sitio */
-.titulo-seccion {
-  font-family: var(--font-display);
-  font-weight: 700;
-  color: var(--color-sch-black);
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid color-mix(in srgb, var(--color-sch-green) 35%, white);
-}
+/* Clases de componentes: en @layer components para que las utilidades de Tailwind (pl-8, etc.) les ganen */
+@layer components {
+  /* Título de sección: Cabin 700 con línea fina verde clara debajo, como "Servicios" en el sitio */
+  .titulo-seccion {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-sch-black);
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-sch-green) 35%, white);
+  }
 
-/* Botón principal: pastilla verde, Cabin 700, con la línea corta antes del texto ("— Conocenos") */
-.boton-principal {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  border-radius: var(--radius-pill);
-  background: var(--color-sch-green);
-  color: #fff;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1rem;
-  padding: 0.6rem 1.4rem;
-  transition: background-color 0.15s;
-}
-.boton-principal::before {
-  content: "";
-  display: block;
-  width: 1.1rem;
-  height: 2px;
-  background: currentColor;
-}
-.boton-principal:hover:not(:disabled) {
-  background: var(--color-sch-green-dark);
-}
-.boton-principal:disabled {
-  opacity: 0.5;
-}
+  /* Botón principal: pastilla verde, Cabin 700, con la línea corta antes del texto ("— Conocenos") */
+  .boton-principal {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-sch-green);
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.6rem 1.4rem;
+    transition: background-color 0.15s;
+  }
+  .boton-principal::before {
+    content: "";
+    display: block;
+    width: 1.1rem;
+    height: 2px;
+    background: currentColor;
+  }
+  .boton-principal:hover:not(:disabled) {
+    background: var(--color-sch-green-dark);
+  }
+  .boton-principal:disabled {
+    opacity: 0.5;
+  }
 
-/* Botón secundario: misma pastilla, borde negro */
-.boton-secundario {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--color-sch-black);
-  background: #fff;
-  color: var(--color-sch-black);
-  font-family: var(--font-display);
-  font-weight: 600;
-  padding: 0.5rem 1.2rem;
-  transition: background-color 0.15s;
-}
-.boton-secundario:hover:not(:disabled) {
-  background: var(--color-sch-surface);
-}
+  /* Botón secundario: misma pastilla, borde negro */
+  .boton-secundario {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-sch-black);
+    background: #fff;
+    color: var(--color-sch-black);
+    font-family: var(--font-display);
+    font-weight: 600;
+    padding: 0.5rem 1.2rem;
+    transition: background-color 0.15s;
+  }
+  .boton-secundario:hover:not(:disabled) {
+    background: var(--color-sch-surface);
+  }
 
-/* Campos de formulario: radio 4px, sin sombras */
-.campo {
-  border: 1px solid color-mix(in srgb, var(--color-sch-black) 25%, white);
-  border-radius: var(--radius-field);
-  background: #fff;
-  padding: 0.45rem 0.7rem;
-  font-size: 0.9375rem;
-}
-.campo:focus {
-  outline: 2px solid var(--color-sch-mint);
-  outline-offset: 1px;
-}
+  /* Campos de formulario: radio 4px, sin sombras */
+  .campo {
+    border: 1px solid color-mix(in srgb, var(--color-sch-black) 25%, white);
+    border-radius: var(--radius-field);
+    background: #fff;
+    padding: 0.45rem 0.7rem;
+    font-size: 0.9375rem;
+  }
+  .campo:focus {
+    outline: 2px solid var(--color-sch-mint);
+    outline-offset: 1px;
+  }
 
-/* Foco visible en todo lo que se toca */
-:where(a, button, select, input, textarea, [tabindex]):focus-visible {
-  outline: 2px solid var(--color-sch-mint);
-  outline-offset: 2px;
+  /* Foco visible en todo lo que se toca */
+  :where(a, button, select, input, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-sch-mint);
+    outline-offset: 2px;
+  }
+
+  /* Fondo negro con hojas muy tenues en verde de marca y menta (reemplaza la foto de follaje del sitio) */
+  .fondo-hojas {
+    background-color: var(--color-sch-black);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cg fill='none' stroke-linecap='round'%3E%3Cpath d='M30 170c0-48 30-80 88-86-6 58-38 88-86 88z' fill='%2358a428' fill-opacity='0.16'/%3E%3Cpath d='M38 162c18-22 40-40 66-54' stroke='%2320d89b' stroke-opacity='0.22' stroke-width='2'/%3E%3Cpath d='M150 70c0-26 16-44 48-47-3 32-21 48-47 48z' fill='%2358a428' fill-opacity='0.12'/%3E%3Cpath d='M190 190c-30 0-48-18-50-46 30 2 48 18 48 46z' fill='%2320d89b' fill-opacity='0.08'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 220px 220px;
+    color: #fff;
+  }
 }
 
 /* Scroll horizontal sin barra visible (navegación y pestañas en el celular) */
