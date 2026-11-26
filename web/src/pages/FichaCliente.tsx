@@ -164,12 +164,12 @@ export default function FichaCliente() {
 
 function Dato({ Icono, etiqueta, children }: { Icono: typeof Mail; etiqueta: string; children: React.ReactNode }) {
   return (
-    <div className="flex min-w-0 items-start gap-2">
-      <Icono className="mt-0.5 h-4 w-4 shrink-0 text-sch-green-dark" aria-hidden />
-      <div className="min-w-0">
-        <dt className="sr-only">{etiqueta}</dt>
-        <dd className="break-words">{children}</dd>
-      </div>
+    <div className="min-w-0">
+      <dt className="sr-only">{etiqueta}</dt>
+      <dd className="flex min-w-0 items-start gap-2 break-words">
+        <Icono className="mt-0.5 h-4 w-4 shrink-0 text-sch-green-dark" aria-hidden />
+        <span className="min-w-0">{children}</span>
+      </dd>
     </div>
   )
 }

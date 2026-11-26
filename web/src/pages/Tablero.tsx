@@ -59,7 +59,7 @@ export default function Tablero() {
 
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Esta semana */}
-        <section className="space-y-4 lg:col-span-2" aria-labelledby="titulo-semana">
+        <section className="min-w-0 space-y-4 lg:col-span-2" aria-labelledby="titulo-semana">
           <TituloSeccion
             accion={
               <Link to="/recordatorios" className="text-sm font-semibold">
@@ -79,7 +79,7 @@ export default function Tablero() {
         </section>
 
         {/* Clientes que necesitan atención */}
-        <section className="space-y-4" aria-labelledby="titulo-atencion">
+        <section className="min-w-0 space-y-4" aria-labelledby="titulo-atencion">
           <TituloSeccion>
             <span id="titulo-atencion">Necesitan atención</span>
           </TituloSeccion>
@@ -124,7 +124,7 @@ export default function Tablero() {
             <span className="text-[11px] uppercase">{mes}</span>
           </span>
           <span className="min-w-0 flex-1">
-            <span className="flex items-center gap-1.5 text-xs text-sch-muted">
+            <span className="flex flex-wrap items-center gap-x-1.5 text-xs text-sch-muted">
               <Icono className="h-3.5 w-3.5" aria-hidden />
               {etiqueta} · <span className={atrasado ? 'font-bold text-sch-red' : ''}>{atrasado ? `atrasado, ${relativo(hoy, r.fecha)}` : relativo(hoy, r.fecha)}</span>
               {r.estado !== 'programado' && <span> · {r.estado === 'pospuesto' ? 'pospuesto' : 'aviso enviado'}</span>}

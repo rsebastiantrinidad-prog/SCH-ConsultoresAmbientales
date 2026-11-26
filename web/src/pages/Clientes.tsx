@@ -157,7 +157,9 @@ export default function Clientes() {
                   {encabezado('servicios', 'Servicios activos', true)}
                   {encabezado('vencimiento', 'Próximo vencimiento')}
                   {encabezado('semaforo', 'Semáforo')}
-                  <th className="w-6" />
+                  <th className="w-6">
+                    <span className="sr-only">Abrir</span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
