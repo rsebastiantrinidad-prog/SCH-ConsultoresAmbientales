@@ -1,0 +1,23 @@
+# Dependencias y builds
+node_modules/
+dist/
+.vercel/
+
+# Variables de entorno: nunca al repo
+.env
+.env.*
+!.env.example
+
+# Datos reales de clientes: nunca al repo
+*.xlsx
+*.xls
+*.csv
+datos/
+
+# Editor y sistema
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+*.tsbuildinfo
