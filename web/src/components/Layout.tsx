@@ -40,7 +40,7 @@ function Menu() {
 export default function Layout() {
   return (
     <div className="flex min-h-full flex-col">
-      <header className="sticky top-0 z-10 bg-sch-black print:hidden">
+      <header className="sticky top-0 z-20 bg-sch-black print:hidden">
         <div className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4">
           <NavLink to="/" className="shrink-0 no-underline" aria-label="SCH Gestión, ir al tablero">
             <Logo className="h-10 w-auto md:h-12" />

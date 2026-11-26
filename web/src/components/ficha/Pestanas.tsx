@@ -12,6 +12,7 @@ import { api, useDemo } from '../../lib/store'
 import type { EstadoDocumento, Nota, Recordatorio } from '../../lib/tipos'
 import { nombreUsuario } from '../../lib/usuario'
 import FilaRecordatorio from '../FilaRecordatorio'
+import Modal from '../Modal'
 import { EstadoDocumentoPastilla, TituloSeccion } from '../ui'
 import { BarraAvance, EstadoServicioPastilla, Vacio, nombreServicio } from './comun'
 import ModalAgregarServicio from './ModalAgregarServicio'
@@ -184,9 +185,11 @@ export function Seguimiento({ clienteId }: PropsPestana) {
   const { datos } = useDemo()
   const servicios = datos.servicios.filter((s) => s.cliente_id === clienteId)
   const [nota, setNota] = useState<Record<string, string>>({})
+  const [confirmar, setConfirmar] = useState<{ servicioId: string; accion: 'avanzar' | 'retroceder'; titulo: string; detalle: string } | null>(null)
 
   return (
     <div className="space-y-8">
+      {confirmar && <ConfirmarEtapa {...confirmar} clienteId={clienteId} onCerrar={() => setConfirmar(null)} />}
       {servicios.length === 0 && <Vacio>Sin servicios para seguir.</Vacio>}
       {servicios.map((s) => {
         const etapas = etapasDeServicio(datos, s.id)
@@ -226,11 +229,32 @@ export function Seguimiento({ clienteId }: PropsPestana) {
             </ol>
 
             <div className="flex flex-wrap gap-2">
-              <button type="button" className="boton-secundario" disabled={hechas === 0} onClick={() => api.retrocederEtapa(s.id)}>
+              <button
+                type="button"
+                className="boton-secundario"
+                disabled={hechas === 0}
+                onClick={() => {
+                  const ultima = [...etapas].reverse().find((e) => e.estado === 'hecha')!
+                  setConfirmar({ servicioId: s.id, accion: 'retroceder', titulo: `Volver a "${ultima.nombre}"`, detalle: `"${ultima.nombre}" vuelve a quedar en curso.` })
+                }}
+              >
                 <ChevronLeft className="h-4 w-4" aria-hidden />
                 Retroceder
               </button>
-              <button type="button" className="boton-principal" disabled={!actual} onClick={() => api.avanzarEtapa(s.id)}>
+              <button
+                type="button"
+                className="boton-principal"
+                disabled={!actual}
+                onClick={() => {
+                  const siguiente = etapas.find((e) => actual && e.orden > actual.orden)
+                  setConfirmar({
+                    servicioId: s.id,
+                    accion: 'avanzar',
+                    titulo: `Marcar hecha "${actual!.nombre}"`,
+                    detalle: siguiente ? `El avance pasa al ${Math.round(((hechas + 1) / etapas.length) * 100)}% y sigue "${siguiente.nombre}".` : 'Es la última etapa: el trámite queda completo y el servicio, vigente.',
+                  })
+                }}
+              >
                 {actual ? `Marcar hecha: ${actual.nombre}` : 'Trámite completo'}
                 {actual && <ChevronRight className="h-4 w-4" aria-hidden />}
               </button>
@@ -259,6 +283,50 @@ export function Seguimiento({ clienteId }: PropsPestana) {
         )
       })}
     </div>
+  )
+}
+
+/** Confirma avanzar o retroceder una etapa; opcionalmente deja una nota en la bitácora en el mismo paso. */
+function ConfirmarEtapa({
+  servicioId, clienteId, accion, titulo, detalle, onCerrar,
+}: {
+  servicioId: string
+  clienteId: string
+  accion: 'avanzar' | 'retroceder'
+  titulo: string
+  detalle: string
+  onCerrar: () => void
+}) {
+  const [texto, setTexto] = useState('')
+  function confirmar() {
+    if (accion === 'avanzar') api.avanzarEtapa(servicioId)
+    else api.retrocederEtapa(servicioId)
+    if (texto.trim()) api.agregarNota(clienteId, texto, servicioId)
+    onCerrar()
+  }
+  return (
+    <Modal
+      titulo={titulo}
+      onCerrar={onCerrar}
+      pie={
+        <>
+          <button type="button" className="boton-secundario" onClick={onCerrar}>
+            Cancelar
+          </button>
+          <button type="button" className="boton-principal" onClick={confirmar}>
+            {accion === 'avanzar' ? 'Marcar hecha' : 'Retroceder'}
+          </button>
+        </>
+      }
+    >
+      <div className="space-y-3">
+        <p>{detalle}</p>
+        <label className="block space-y-1">
+          <span className="font-display text-sm font-bold">Nota para la bitácora (opcional)</span>
+          <textarea className="campo min-h-20 w-full" value={texto} onChange={(e) => setTexto(e.target.value)} placeholder="Por ejemplo: se presentó el EIA en la mesa de entradas del organismo." />
+        </label>
+      </div>
+    </Modal>
   )
 }
 

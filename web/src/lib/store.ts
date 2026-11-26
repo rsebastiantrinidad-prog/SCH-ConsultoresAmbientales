@@ -102,6 +102,9 @@ export const api = {
   simularEnvio: (r: Recordatorio, canal: string) =>
     aplicar((d) => acciones.simularEnvio(d, ctx(r.cliente_id), r, canal)),
 
+  moverProximaFecha: (servicioId: string, fecha: Fecha) =>
+    aplicar((d) => acciones.moverProximaFecha(d, ctx(clienteDeServicio(servicioId)), servicioId, fecha)),
+
   /** Cambia el "hoy" del demo; los datos no se tocan (es como si pasara el tiempo). */
   cambiarHoy: (hoy: Fecha) => guardar({ ...estado, hoy }),
   /** Vuelve todo al seed, relativo al hoy por defecto. */

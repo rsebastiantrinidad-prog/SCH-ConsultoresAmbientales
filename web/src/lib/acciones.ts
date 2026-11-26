@@ -162,3 +162,19 @@ export function simularEnvio(datos: Datos, ctx: Contexto, r: Recordatorio, canal
   const conAjuste = existe ? ajustar(datos, r.id, 'enviado') : datos
   return { ...conAjuste, notas: [...conAjuste.notas, nota(ctx, r.cliente_id, r.servicio_cliente_id, `Aviso simulado por ${canal}: ${r.titulo}.`, true)] }
 }
+
+// ---------------------------------------------------------------- Plan anual
+
+/** Mueve la próxima visita o auditoría de un servicio; las siguientes del plan se corren con ella. */
+export function moverProximaFecha(datos: Datos, ctx: Contexto, servicioId: string, fecha: Fecha): Datos {
+  const s = datos.servicios.find((x) => x.id === servicioId)
+  if (!s || !s.proxima_fecha || s.proxima_fecha === fecha) return datos
+  const anterior = s.proxima_fecha
+  return {
+    ...datos,
+    servicios: datos.servicios.map((x) => (x.id === servicioId ? { ...x, proxima_fecha: fecha } : x)),
+    // La visita derivada vuelve a "programado" con la fecha nueva
+    ajustes_recordatorios: Object.fromEntries(Object.entries(datos.ajustes_recordatorios).filter(([id]) => id !== `vis-${servicioId}`)),
+    notas: [...datos.notas, nota(ctx, s.cliente_id, servicioId, `Visita reprogramada del ${fechaCorta(anterior)} al ${fechaCorta(fecha)}.`, true)],
+  }
+}

@@ -2,7 +2,7 @@
  * Reglas de estados y recordatorios (ver docs/spec-demo.md, "Reglas de recordatorios y estados").
  * Funciones puras: todo se calcula contra un `hoy` recibido por parámetro. Las pantallas no recalculan nada por su cuenta.
  */
-import { diasEntre, fechaCorta, sumarDias } from './formato'
+import { diasEntre, fechaCorta, sumarDias, sumarMeses } from './formato'
 import type {
   Cliente, Datos, Documento, Etapa, EstadoDocumento, Fecha, Recordatorio, Semaforo, ServicioCliente, TipoRecordatorio,
 } from './tipos'
@@ -266,6 +266,63 @@ export function compararFilas(a: FilaCliente, b: FilaCliente): number {
     (a.proximo_vencimiento?.fecha ?? '9999').localeCompare(b.proximo_vencimiento?.fecha ?? '9999') ||
     a.cliente.razon_social.localeCompare(b.cliente.razon_social)
   )
+}
+
+// ---------------------------------------------------------------- Plan anual
+
+export type TipoEventoPlan = 'visita' | 'auditoria' | 'renovacion'
+
+export interface EventoPlan {
+  id: string
+  fecha: Fecha
+  tipo: TipoEventoPlan
+  titulo: string
+  /** Solo la próxima visita o auditoría se mueve a mano; las siguientes se calculan desde ella. */
+  movible: boolean
+}
+
+export interface FilaPlan {
+  servicio: ServicioCliente
+  nombre: string
+  eventos: EventoPlan[]
+}
+
+/** Las categorías cuya visita periódica es una auditoría. */
+const ES_AUDITORIA = new Set(['auditoria_pga', 'iso'])
+
+/**
+ * Plan de 12 meses desde `desdeMes` ('YYYY-MM') para un cliente: por servicio, las visitas o auditorías
+ * (próxima fecha + periodicidad) y las renovaciones de documentos que vencen en el período.
+ */
+export function planAnual(datos: Datos, clienteId: string, desdeMes: string): FilaPlan[] {
+  const inicio = `${desdeMes}-01`
+  const fin = sumarDias(sumarMeses(inicio, 12), -1)
+  const dentro = (f: Fecha) => f >= inicio && f <= fin
+
+  return datos.servicios
+    .filter((s) => s.cliente_id === clienteId && s.estado !== 'finalizado')
+    .map((s) => {
+      const cat = datos.catalogo.find((c) => c.id === s.servicio_id)
+      const nombre = cat?.nombre ?? s.servicio_id
+      const eventos: EventoPlan[] = []
+
+      if (s.periodicidad_meses && s.proxima_fecha && (s.estado === 'vigente' || s.estado === 'en_curso')) {
+        const tipo: TipoEventoPlan = cat && ES_AUDITORIA.has(cat.categoria) ? 'auditoria' : 'visita'
+        for (let k = 0; ; k++) {
+          const f = sumarMeses(s.proxima_fecha, k * s.periodicidad_meses)
+          if (f > fin) break
+          if (dentro(f)) eventos.push({ id: `${s.id}-v${k}`, fecha: f, tipo, titulo: tipo === 'auditoria' ? 'Auditoría' : 'Visita', movible: k === 0 })
+        }
+      }
+
+      for (const d of datos.documentos) {
+        if (d.servicio_cliente_id !== s.id || !d.vigente_hasta || d.carga === 'pendiente' || !dentro(d.vigente_hasta)) continue
+        eventos.push({ id: `${d.id}-r`, fecha: d.vigente_hasta, tipo: 'renovacion', titulo: `Renovar ${d.nombre}`, movible: false })
+      }
+
+      eventos.sort((a, b) => a.fecha.localeCompare(b.fecha))
+      return { servicio: s, nombre, eventos }
+    })
 }
 
 // ---------------------------------------------------------------- Regla 6: avisos
